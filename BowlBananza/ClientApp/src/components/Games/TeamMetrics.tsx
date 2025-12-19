@@ -74,6 +74,7 @@ export function TeamMetrics({ metrics, onClose }: Props) {
     const title = useMemo(() => `${metrics.Team} Metrics`, [metrics.Team]);
 
     const altColor = metrics.Color ?? invertHexColor(metrics.AlternateColor ?? '#000000');
+    const altColorHeader = metrics.AlternateColor ?? invertHexColor(metrics.Color ?? '#000000');
     const color = useMemo(() => generateMetallicCSS(altColor, true), [altColor]);
 
     const hoverStyle = useMemo<React.CSSProperties>(
@@ -84,6 +85,7 @@ export function TeamMetrics({ metrics, onClose }: Props) {
     );
 
     const shouldUseDark = useMemo(() => shouldUseDarkText(altColor), [altColor]);
+    const shouldUseDarkHeader = useMemo(() => shouldUseDarkText(altColorHeader), [altColorHeader]);
 
     const matchupHeaderStyle = useMemo<React.CSSProperties>(
         () => ({
@@ -97,8 +99,8 @@ export function TeamMetrics({ metrics, onClose }: Props) {
             <div className={styles.metricHeader} style={matchupHeaderStyle}>
                 <div className={styles.metricHeaderText}>
                     <div style={{flexGrow: 1}}>
-                        <div className={`${styles.metricTitle} ${shouldUseDark ? styles.metricDark : ''}`}>{title}</div>
-                        <div className={`${styles.metricSubTitle} ${shouldUseDark ? styles.metricDark : ''}`}>
+                        <div className={`${styles.metricTitle} ${shouldUseDarkHeader ? styles.metricDark : ''}`}>{title}</div>
+                        <div className={`${styles.metricSubTitle} ${shouldUseDarkHeader ? styles.metricDark : ''}`}>
                             Games: {formatNumber(metrics.GamesPlayed)} · Points: {formatNumber(metrics.Points)} · Total Yards:{" "}
                             {formatNumber(metrics.TotalYards)}
                         </div>

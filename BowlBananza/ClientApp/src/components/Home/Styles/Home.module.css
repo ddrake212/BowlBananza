@@ -235,6 +235,8 @@
     max-height: 0;
     opacity: 0;
     transform: translateY(-6px);
+    margin-top: 0;
+    margin-bottom: -.5rem;
 }
 
 
