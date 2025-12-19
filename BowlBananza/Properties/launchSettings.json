@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "BowlBananza": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://www.dev.bowlbananza.com:7001",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://www.dev.bowlbananza.com:7001;http://www.dev.bowlbananza.com:7000"
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:47921",
+      "sslPort": 44371
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b57b6750.css",
+    "main.js": "/static/js/main.b1e676b7.js",
+    "static/media/Person.png": "/static/media/Person.50b4cd41c13bcb17383d.png",
+    "static/media/gamesBG.png": "/static/media/gamesBG.85e4b74da1fbd4c2591c.png",
+    "static/media/Password.png": "/static/media/Password.82dd5567709e8c609698.png",
+    "static/media/Email.png": "/static/media/Email.67322c517d4a35a6cdf8.png",
+    "static/media/homeBG.png": "/static/media/homeBG.4adfd829ef9c078d6e0b.png",
+    "static/media/logo.webp": "/static/media/logo.e4ac6bc18deab7b76480.webp",
+    "static/media/historyBG.webp": "/static/media/historyBG.9ca60b465e3cf47a90a4.webp",
+    "static/media/settingsBG.webp": "/static/media/settingsBG.8e120306b73aa0c9f2fc.webp",
+    "static/media/commishBG.webp": "/static/media/commishBG.b8b58380831896296b0d.webp",
+    "index.html": "/index.html",
+    "static/media/google-color.svg": "/static/media/google-color.f2140b4ca51621118fd6.svg",
+    "main.b57b6750.css.map": "/static/css/main.b57b6750.css.map",
+    "main.b1e676b7.js.map": "/static/js/main.b1e676b7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b57b6750.css",
+    "static/js/main.b1e676b7.js"
+  ]
+}

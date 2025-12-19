@@ -1,0 +1,80 @@
+﻿.primaryBtn {
+    padding: .2rem .75rem;
+    border-radius: 1rem;
+    background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+    border-color: var(--orange);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow .2s ease;
+}
+
+.primaryBtn:hover {
+    box-shadow: 3px 3px 10px 2px rgba(0,0,0,0.6);
+}
+
+.primaryBtn:before {
+    content: '';
+    position: absolute;
+    background: var(--dark-orange);
+    height: 100%;
+    width: 0%;
+    top: 0;
+    right: 0%;
+    transition: width .2s ease;
+}
+
+.primaryBtn > * {
+    position: relative;
+    z-index: 2;
+}
+
+.primaryBtn:not([disabled]):hover:before {
+    width: 100%;
+}
+
+.userHolder {
+    display: flex;
+    flex-direction: column;
+}
+
+.userHolder select {
+    background: transparent;
+    color: var(--orange);
+    border: 2px solid var(--orange);
+    border-radius: .5rem;
+    padding: .25rem .5rem;
+    margin-bottom: .5rem;
+}
+
+.userHolder option {
+    color: var(--orange);
+    background-color: var(--grey);
+}
+
+.commishHolder {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.commishContent {
+    height: 360px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+@media (max-height: 360px) {
+    .commishHolder {
+        align-items: start;
+    }
+}

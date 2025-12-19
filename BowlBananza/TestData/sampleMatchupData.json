@@ -1,0 +1,1330 @@
+[
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 40,
+        "awayTeam": "South Carolina State",
+        "date": "2025-12-13T17:00:00.000Z",
+        "homeScore": 38,
+        "homeTeam": "Prairie View A\u0026M",
+        "neutralSite": true,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Mercedes-Benz Stadium",
+        "week": 1,
+        "winner": "South Carolina State"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Prairie View A\u0026M",
+    "team1Wins": 0,
+    "team2": "South Carolina State",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 10,
+        "awayTeam": "Boise State",
+        "date": "2025-12-14T01:00:00.000Z",
+        "homeScore": 38,
+        "homeTeam": "Washington",
+        "neutralSite": true,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "SoFi Stadium",
+        "week": 1,
+        "winner": "Washington"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Washington",
+    "team1Wins": 1,
+    "team2": "Boise State",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 23,
+        "awayTeam": "Oklahoma",
+        "date": "2025-11-15T20:30:00.000Z",
+        "homeScore": 21,
+        "homeTeam": "Alabama",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "regular",
+        "venue": "Bryant-Denny Stadium",
+        "week": 12,
+        "winner": "Oklahoma"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Oklahoma",
+    "team1Wins": 1,
+    "team2": "Alabama",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 10,
+        "awayTeam": "Tulane",
+        "date": "2025-09-20T19:30:00.000Z",
+        "homeScore": 45,
+        "homeTeam": "Ole Miss",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "regular",
+        "venue": "Vaught-Hemingway Stadium",
+        "week": 4,
+        "winner": "Ole Miss"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Ole Miss",
+    "team1Wins": 1,
+    "team2": "Tulane",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 31,
+        "awayTeam": "Montana State",
+        "date": "2025-11-22T19:00:00.000Z",
+        "homeScore": 28,
+        "homeTeam": "Montana",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "regular",
+        "venue": "Washington-Grizzly Stadium",
+        "week": 13,
+        "winner": "Montana State"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Montana State",
+    "team1Wins": 1,
+    "team2": "Montana",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 25,
+        "awayTeam": "Georgia Southern",
+        "date": "2025-11-07T00:30:00.000Z",
+        "homeScore": 23,
+        "homeTeam": "App State",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "regular",
+        "venue": "Kidd Brewer Stadium",
+        "week": 11,
+        "winner": "Georgia Southern"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "App State",
+    "team1Wins": 0,
+    "team2": "Georgia Southern",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [],
+    "startYear": 2025,
+    "team1": null,
+    "team1Wins": 0,
+    "team2": null,
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 24,
+        "awayTeam": "Lagrange College",
+        "date": "2025-11-22T17:00:00.000Z",
+        "homeScore": 21,
+        "homeTeam": "Framingham State",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Bowditch Field",
+        "week": 13,
+        "winner": "Lagrange College"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Framingham State",
+    "team1Wins": 0,
+    "team2": "Lagrange College",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 26,
+        "awayTeam": "Union (NY)",
+        "date": "2025-11-22T17:00:00.000Z",
+        "homeScore": 34,
+        "homeTeam": "Muhlenberg",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Scotty Wood Stadium",
+        "week": 13,
+        "winner": "Muhlenberg"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Muhlenberg",
+    "team1Wins": 1,
+    "team2": "Union (NY)",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 0,
+        "awayTeam": "Bentley",
+        "date": "2025-11-22T17:00:00.000Z",
+        "homeScore": 52,
+        "homeTeam": "Kutztown University",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Andre Reed Stadium",
+        "week": 13,
+        "winner": "Kutztown University"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Kutztown University",
+    "team1Wins": 1,
+    "team2": "Bentley",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 7,
+        "awayTeam": "Cortland",
+        "date": "2025-11-22T17:00:00.000Z",
+        "homeScore": 21,
+        "homeTeam": "Springfield",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Stagg Field",
+        "week": 13,
+        "winner": "Springfield"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Springfield",
+    "team1Wins": 1,
+    "team2": "Cortland",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 15,
+        "awayTeam": "Grove City College",
+        "date": "2025-11-22T17:00:00.000Z",
+        "homeScore": 23,
+        "homeTeam": "Hanover College",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Alumni Stadium (IN)",
+        "week": 13,
+        "winner": "Hanover College"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Hanover College",
+    "team1Wins": 1,
+    "team2": "Grove City College",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 32,
+        "awayTeam": "Washington \u0026 Jefferson",
+        "date": "2025-11-22T17:00:00.000Z",
+        "homeScore": 38,
+        "homeTeam": "Susquehanna",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Amos Alonzo Stagg Field (PA)",
+        "week": 13,
+        "winner": "Susquehanna"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Susquehanna",
+    "team1Wins": 1,
+    "team2": "Washington \u0026 Jefferson",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 21,
+        "awayTeam": "Frostburg State",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 7,
+        "homeTeam": "Johnson C Smith",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Irwin Belk Complex",
+        "week": 13,
+        "winner": "Frostburg State"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Johnson C Smith",
+    "team1Wins": 0,
+    "team2": "Frostburg State",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 37,
+        "awayTeam": "Minnesota State Mankato",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 14,
+        "homeTeam": "Findlay",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Donnell Stadium",
+        "week": 13,
+        "winner": "Minnesota State Mankato"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Findlay",
+    "team1Wins": 0,
+    "team2": "Minnesota State Mankato",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 30,
+        "awayTeam": "Valdosta State",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 35,
+        "homeTeam": "Albany State GA",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Albany State University Coliseum",
+        "week": 13,
+        "winner": "Albany State GA"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Albany State GA",
+    "team1Wins": 1,
+    "team2": "Valdosta State",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 23,
+        "awayTeam": "Assumption",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 20,
+        "homeTeam": "Indiana-Pennsylvania",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "George P. Miller Stadium",
+        "week": 13,
+        "winner": "Assumption"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Indiana-Pennsylvania",
+    "team1Wins": 0,
+    "team2": "Assumption",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 24,
+        "awayTeam": "Kentucky State",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 45,
+        "homeTeam": "Newberry",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Setzler Field",
+        "week": 13,
+        "winner": "Newberry"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Newberry",
+    "team1Wins": 1,
+    "team2": "Kentucky State",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 14,
+        "awayTeam": "Crown College",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 76,
+        "homeTeam": "Wheaton",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "McCully Stadium",
+        "week": 13,
+        "winner": "Wheaton"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Wheaton",
+    "team1Wins": 1,
+    "team2": "Crown College",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 14,
+        "awayTeam": "Northwood (MI)",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 65,
+        "homeTeam": "Ferris State",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Top Taggart Field",
+        "week": 13,
+        "winner": "Ferris State"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Ferris State",
+    "team1Wins": 1,
+    "team2": "Northwood (MI)",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 44,
+        "awayTeam": "Coe College",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 7,
+        "homeTeam": "Concordia-Wisconsin",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Tomasini Stadium",
+        "week": 13,
+        "winner": "Coe College"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Concordia-Wisconsin",
+    "team1Wins": 0,
+    "team2": "Coe College",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 7,
+        "awayTeam": "Minnesota Duluth",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 32,
+        "homeTeam": "Ashland",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Jack Miller Stadium",
+        "week": 13,
+        "winner": "Ashland"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Ashland",
+    "team1Wins": 1,
+    "team2": "Minnesota Duluth",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 27,
+        "awayTeam": "PennWest California",
+        "date": "2025-11-22T18:00:00.000Z",
+        "homeScore": 24,
+        "homeTeam": "Virginia Union",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Hovey Field",
+        "week": 13,
+        "winner": "PennWest California"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Virginia Union",
+    "team1Wins": 0,
+    "team2": "PennWest California",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 16,
+        "awayTeam": "Northwest Missouri St",
+        "date": "2025-11-22T19:00:00.000Z",
+        "homeScore": 38,
+        "homeTeam": "Harding University",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "First Security Stadium",
+        "week": 13,
+        "winner": "Harding University"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Harding University",
+    "team1Wins": 1,
+    "team2": "Northwest Missouri St",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 14,
+        "awayTeam": "Truman State",
+        "date": "2025-11-22T19:00:00.000Z",
+        "homeScore": 57,
+        "homeTeam": "Indianapolis",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Key Stadium",
+        "week": 13,
+        "winner": "Indianapolis"
+      },
+      {
+        "awayScore": 30,
+        "awayTeam": "Indianapolis",
+        "date": "2025-09-27T18:30:00.000Z",
+        "homeScore": 20,
+        "homeTeam": "Truman State",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "regular",
+        "venue": "Stokes Stadium",
+        "week": 5,
+        "winner": "Indianapolis"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Indianapolis",
+    "team1Wins": 2,
+    "team2": "Truman State",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 25,
+        "awayTeam": "Benedict College",
+        "date": "2025-11-22T19:00:00.000Z",
+        "homeScore": 24,
+        "homeTeam": "Wingate",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Irwin Belk Stadium",
+        "week": 13,
+        "winner": "Benedict College"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Wingate",
+    "team1Wins": 0,
+    "team2": "Benedict College",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 17,
+        "awayTeam": "Chadron St",
+        "date": "2025-11-22T19:00:00.000Z",
+        "homeScore": 21,
+        "homeTeam": "Pittsburg St",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Carnie Smith Stadium",
+        "week": 13,
+        "winner": "Pittsburg St"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Pittsburg St",
+    "team1Wins": 1,
+    "team2": "Chadron St",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 19,
+        "awayTeam": "North Greenville",
+        "date": "2025-11-22T19:00:00.000Z",
+        "homeScore": 43,
+        "homeTeam": "West Florida",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Pen-Air Field",
+        "week": 13,
+        "winner": "West Florida"
+      },
+      {
+        "awayScore": 25,
+        "awayTeam": "West Florida",
+        "date": "2025-09-20T23:00:00.000Z",
+        "homeScore": 17,
+        "homeTeam": "North Greenville",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "regular",
+        "venue": "Younts Stadium",
+        "week": 4,
+        "winner": "West Florida"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "West Florida",
+    "team1Wins": 2,
+    "team2": "North Greenville",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 37,
+        "awayTeam": "UT Permian Basin",
+        "date": "2025-11-22T20:00:00.000Z",
+        "homeScore": 24,
+        "homeTeam": "CSU Pueblo",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Neta and Eddie DeRose ThunderBowl",
+        "week": 13,
+        "winner": "UT Permian Basin"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "CSU Pueblo",
+    "team1Wins": 0,
+    "team2": "UT Permian Basin",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 18,
+        "awayTeam": "Chapman",
+        "date": "2025-11-22T20:00:00.000Z",
+        "homeScore": 16,
+        "homeTeam": "Whitworth",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "The Pine Bowl",
+        "week": 13,
+        "winner": "Chapman"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Whitworth",
+    "team1Wins": 0,
+    "team2": "Chapman",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 27,
+        "awayTeam": "Western Colorado",
+        "date": "2025-11-22T21:00:00.000Z",
+        "homeScore": 20,
+        "homeTeam": "Central Washington",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Tomlinson Stadium",
+        "week": 13,
+        "winner": "Western Colorado"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Central Washington",
+    "team1Wins": 0,
+    "team2": "Western Colorado",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 9,
+        "awayTeam": "Wisconsin-Lacrosse",
+        "date": "2025-11-29T17:00:00.000Z",
+        "homeScore": 7,
+        "homeTeam": "Hope College",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Ray and Sue Smith Stadium",
+        "week": 14,
+        "winner": "Wisconsin-Lacrosse"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Hope College",
+    "team1Wins": 0,
+    "team2": "Wisconsin-Lacrosse",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 28,
+        "awayTeam": "Eastern University",
+        "date": "2025-11-29T17:00:00.000Z",
+        "homeScore": 24,
+        "homeTeam": "Franklin \u0026 Marshall",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Shadek Stadium",
+        "week": 14,
+        "winner": "Eastern University"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Franklin \u0026 Marshall",
+    "team1Wins": 0,
+    "team2": "Eastern University",
+    "team2Wins": 1,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 28,
+        "awayTeam": "Endicott College",
+        "date": "2025-11-29T17:00:00.000Z",
+        "homeScore": 35,
+        "homeTeam": "Salisbury",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Sea Gull Stadium",
+        "week": 14,
+        "winner": "Salisbury"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Salisbury",
+    "team1Wins": 1,
+    "team2": "Endicott College",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 6,
+        "awayTeam": "Randolph-Macon",
+        "date": "2025-11-29T17:00:00.000Z",
+        "homeScore": 35,
+        "homeTeam": "John Carroll University",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Don Shula Stadium at Wasmer Field",
+        "week": 14,
+        "winner": "John Carroll University"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "John Carroll University",
+    "team1Wins": 1,
+    "team2": "Randolph-Macon",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 15,
+        "awayTeam": "Monmouth (IL)",
+        "date": "2025-11-29T18:00:00.000Z",
+        "homeScore": 49,
+        "homeTeam": "Saint John\u0027s (MN)",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Clemens Stadium",
+        "week": 14,
+        "winner": "Saint John\u0027s (MN)"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Saint John\u0027s (MN)",
+    "team1Wins": 1,
+    "team2": "Monmouth (IL)",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 7,
+        "awayTeam": "Alma",
+        "date": "2025-11-29T18:00:00.000Z",
+        "homeScore": 24,
+        "homeTeam": "Wisconsin-Platteville",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Ralph E. Davis Pioneer Stadium",
+        "week": 14,
+        "winner": "Wisconsin-Platteville"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Wisconsin-Platteville",
+    "team1Wins": 1,
+    "team2": "Alma",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 24,
+        "awayTeam": "Hardin-Simmons",
+        "date": "2025-11-29T18:00:00.000Z",
+        "homeScore": 34,
+        "homeTeam": "Trinity University TX",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Trinity University Stadium",
+        "week": 14,
+        "winner": "Trinity University TX"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Trinity University TX",
+    "team1Wins": 1,
+    "team2": "Hardin-Simmons",
+    "team2Wins": 0,
+    "ties": 0
+  },
+  {
+    "endYear": 2025,
+    "games": [
+      {
+        "awayScore": 26,
+        "awayTeam": "Depauw",
+        "date": "2025-11-29T18:00:00.000Z",
+        "homeScore": 23,
+        "homeTeam": "Wisconsin-Whitewater",
+        "neutralSite": false,
+        "season": 2025,
+        "seasonType": "postseason",
+        "venue": "Perkins Stadium",
+        "week": 14,
+        "winner": "Depauw"
+      }
+    ],
+    "startYear": 2025,
+    "team1": "Wisconsin-Whitewater",
+    "team1Wins": 0,
+    "team2": "Depauw",
+    "team2Wins": 1,
+    "ties": 0
+  }
+]

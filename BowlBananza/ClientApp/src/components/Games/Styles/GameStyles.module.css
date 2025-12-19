@@ -1,0 +1,1124 @@
+﻿.content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameContainer {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    max-height: min(80%,800px);
+    max-width: min(86%,1600px);
+    border-radius: 2rem;
+    overflow: hidden;
+}
+
+.foreground {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top:0;
+    left:0;
+    display: flex;
+    padding: 2rem;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.noGamesLabel {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.noGamesLabel h3 {
+    color: var(--orange);
+}
+
+.background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    filter: blur(4px);
+}
+
+.background:after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border-radius: 2rem;
+    filter: blur(3px);
+    border: 5px solid var(--background-border-color);
+    top: 0;
+    left: 0;
+    transition: border-color .25s ease;
+}
+
+.slideFromRight {
+    animation: slideInFromRight 0.35s ease-out;
+}
+
+.slideFromLeft {
+    animation: slideInFromLeft 0.35s ease-out;
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(40%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-40%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.flexStack {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.teamHolder {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.teamCard {
+    border-radius: 2rem;
+    padding: 1rem 0;
+    border: 2px solid white;
+    width: calc(50% - 75px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.cardLocked {
+    cursor: default !important;
+    opacity: .6;
+}
+
+.teamCard img {
+    width: 45%;
+    max-height: 225px;
+    margin-bottom: .5rem;
+}
+
+.teamCard div {
+    color: inherit;
+}
+
+.teamCard h3, .teamCard h4, .teamCard p  {
+    color: inherit;
+}
+
+.teamCard h3 {
+    font-size: 5ch;
+}
+
+.teamCard p {
+    font-size: 2.5ch;
+}
+
+.teamCard h4 {
+    font-size: 4ch;
+}
+
+@media (max-height: 1025px) and (max-width: 660px) {
+    .teamCard img {
+        height: 100px;
+        width: auto;
+    }
+}
+
+@media (max-height: 730px) and (max-width: 660px) {
+    .teamCard img {
+        height: 50px;
+    }
+}
+
+@media (max-height: 630px) and (max-width: 660px) {
+    .teamCard img {
+        height: 25px;
+    }
+}
+
+.teamCard button {
+    background: transparent;
+    color: inherit;
+    border-color: inherit;
+    padding: .5rem;
+    border-radius: 2rem;
+    font-weight: bold;
+    margin-top: .5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.teamCard button:hover {
+    box-shadow: 3px 3px 10px 2px rgba(0,0,0,0.4);
+}
+
+.Next, .Back {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--orange);
+    border-radius: 100%;
+    cursor: pointer;
+    position: relative;
+    transition: box-shadow .2s ease, background-color .2s ease;
+    background-color: transparent;
+}
+
+.Next {
+    margin-left: .75rem;
+}
+
+.Back {
+    margin-right: .75rem;
+}
+
+.Next[disabled], .Back[disabled] {
+    opacity: .6;
+    cursor: default;
+}
+
+.Next:not([disabled]):hover, .Back:not([disabled]):hover {
+    box-shadow: 0px 0px 5px 2px var(--orange);
+    background-color: var(--orange);
+}
+
+.Next:not([disabled]):hover:before, .Back:not([disabled]):hover:before {
+    border-color: white;
+}
+
+.Back:before {
+    content: '';
+    position: absolute;
+    border: 2px solid var(--orange);
+    border-top: 0px;
+    border-right: 0px;
+    transform: rotate(45deg);
+    height: 10px;
+    width: 10px;
+    top: 13px;
+    left: 13px;
+    transition: border-color .2s ease;
+}
+
+.Next:before {
+    content: '';
+    position: absolute;
+    border: 2px solid var(--orange);
+    border-top: 0px;
+    border-left: 0px;
+    transform: rotate(-45deg);
+    height: 10px;
+    width: 10px;
+    top: 13px;
+    right: 13px;
+    transition: border-color .2s ease;
+}
+
+.gameTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    flex-direction: column;
+    max-width: 250px;
+    min-width: 250px;
+}
+
+.gameTitle h3 {
+    color: var(--grey);
+    text-shadow: 
+        0 0 5px #00FFFF,   /* Subtle inner glow */
+        0 0 10px #00FFFF,  /* Stronger middle glow */
+        0 0 15px #0000FF,  /* Blue halo for depth */
+        0 0 20px rgba(0, 255, 255, 0.4); /* Faint outer blur */
+}
+
+.currentProgress {
+    border: 2px inset #00ffff;
+}
+
+.gameTitle h3::before,
+.gameTitle h3::after {
+    content: "";
+    display: block;
+    width: 80%; /* Extends beyond the text */
+    height: 3px;
+    background: linear-gradient(to right, transparent 0%, var(--orange) 50%, transparent 100%); /* Orange glow line */
+    margin: 10px auto;
+    opacity: 0.5;
+}
+
+.gameTitle h3::before {
+    margin-bottom: 20px;
+}
+
+.gameTitle h3::after {
+    margin-top: 20px;
+}
+
+.teamBackground {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: radial-gradient(circle at 20% 30%, transparent, black);
+    height: 100%;
+    width: 100%;
+}
+
+.awayBackground {
+    background: radial-gradient(circle at 80% 30%, transparent, black);
+}
+
+.progressBar {
+    height: 15px;
+    width: 100%;
+    display: flex;
+    gap: 2px;
+    position: relative;
+    z-index: 3;
+    overflow:hidden;
+}
+
+.progressBar > div {
+    transform: skewX(-29deg);
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+.mainGameHolder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.gameSelected {
+    background: green;
+}
+
+.gameSeen {
+    background: red;
+}
+
+.teamBG {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.saveBtn, .secondaryBtn {
+    padding: .2rem .75rem;
+    border-radius: 1rem;
+    background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+    border-color: var(--orange);
+    margin-top: 1rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow .2s ease;
+}
+
+.saveBtn:hover {
+    box-shadow: 3px 3px 10px 2px rgba(0,0,0,0.6);
+}
+
+.saveBtn:before, .secondaryBtn:before {
+    content:'';
+    position:absolute;
+    background: var(--dark-orange);
+    height: 100%;
+    width: 0%;
+    top: 0;
+    right: 0%;
+    transition: width .2s ease;
+}
+
+.saveBtn > *, .secondaryBtn > * {
+    position: relative;
+    z-index: 2;
+}
+
+.saveBtn:not([disabled]):hover:before, .secondaryBtn:not([disabled]):hover:before {
+    width: 100%;
+}
+
+.statsBtn {
+    position: relative;
+    overflow: hidden;
+}
+
+.statsBtn:hover:before {
+    width: 100%;
+}
+
+.statsBtn > * {
+    position: relative;
+    z-index: 2;
+    color: inherit;
+}
+
+.saveBtn[disabled] {
+    opacity: .6;
+    cursor:default;
+}
+
+.statsBtn:before {
+    content: '';
+    background: var(--stats-border-color);
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    right: 0%;
+    top: 0;
+    transition:width .2s ease;
+}
+
+.secondaryBtn {
+    background: transparent;
+    color: var(--orange);
+}
+
+.secondaryBtn > * {
+    color: var(--orange);
+    transition:color .2s ease;
+}
+
+.secondaryBtn:hover > * {
+    color: white;
+}
+
+.gameNameHolder {
+    background: linear-gradient(90deg, transparent, #ffffff44, transparent);
+    width: 100%;
+    padding: .5rem;
+}
+
+.gameNameHolder * {
+    margin: 0;
+}
+
+.gamesDialogHolder {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 4;
+}
+
+.gamesDialogHolder > * {
+    animation: grow .3s ease forwards;
+}
+
+@keyframes grow {
+    0% {
+        transform: scale(.6);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.gamesDialogHolder > *.closing {
+    animation: shrink .3s ease forwards;
+}
+
+@keyframes shrink {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(.6);
+        opacity: 0;
+    }
+}
+
+.submitChoicesHolder {
+    padding: 2rem;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 2px solid var(--orange);
+    border-radius: 1rem;
+    background: radial-gradient(transparent, var(--grey));
+    box-shadow: 3px 3px 10px 3px rgba(0, 0, 0, 0.6);
+    min-height: 200px;
+    width: 350px;
+}
+
+.submitOverlay, .metricsOverlay, .matchupOverlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-height: 330px) {
+    .submitOverlay {
+        align-items: start;
+    }
+}
+
+.SCBtnHolder {
+    display: flex;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.SCBtnHolder > * {
+    width: 50%;
+}
+
+@media (max-width: 256px) {
+    .SCBtnHolder > * {
+        width: 100%;
+    }
+    .SCBtnHolder {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 660px) {
+    .saveBtn {
+        width: 100%;
+    }
+    .gameContainer {
+        max-height: 100%;
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .foreground {
+        padding: 1rem;
+        flex-direction: column;
+    }
+
+    .Back, .Next {
+        display: none;
+    }
+
+    .background {
+        display: none;
+    }
+
+    .teamHolder {
+        flex-direction: column;
+    }
+
+    .teamCard {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        transition: transform .2s ease;
+    }
+
+    .gameTitle {
+        order: -1;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .gameTitle p {
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+.metricModal {
+    width: min(400px, 100%);
+    max-height: min(84vh, 900px);
+    overflow: hidden;
+    background: rgba(19, 28, 43, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+}
+
+.metricDark:not(:hover) {
+    color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.metricHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 16px 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(var(--metricHeaderA), var(--metricHeaderB),var(--metricHeaderA));
+    text-shadow: 0 0 4px black;
+}
+
+.metricHeaderText {
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+    width: 100%;
+}
+
+.metricHeaderText img{
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.metricTitle {
+    font-size: 16pt;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.metricSubTitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.35;
+}
+
+.metricCloseButton {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.92);
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+    .metricCloseButton:hover {
+        background: rgba(255, 255, 255, 0.10);
+    }
+
+.metricTabs {
+    display: flex;
+    gap: .5rem;
+    padding: 10px 12px;
+    padding-bottom: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+}
+
+.metricTabButton, .metricPrimaryButton {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    color: inherit;
+    border-color: inherit;
+    padding: .5rem;
+    border-radius: 2rem;
+    font-weight: bold;
+    margin-top: .5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.metricTabButton {
+    border-radius: .5rem .5rem 0 0;
+    border-bottom: 0;
+}
+
+.metricTabButton:hover:before, .metricPrimaryButton:hover:before {
+    width: 100%;
+}
+
+.metricTabButton > *, .metricPrimaryButton > * {
+    position: relative;
+    z-index: 2;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.metricTabButton:before, .metricPrimaryButton:before {
+    content: '';
+    background: var(--stats-border-color);
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    right: 0%;
+    top: 0;
+    transition: width .2s ease;
+}
+
+.metricTabButtonActive:before {
+    width: 100%;
+}
+
+.metricContent {
+    overflow: auto;
+    padding: 14px 16px 16px 16px;
+}
+
+.metricPanel {
+    background: rgba(10, 15, 23, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.metricPanelTitle {
+    padding: 12px 12px 10px 12px;
+    font-size: 14pt;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.90);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: none;
+}
+
+.metricStatRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+    .metricStatRow:last-child {
+        border-bottom: none;
+    }
+
+.metricStatLabel {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.metricStatLabelText {
+    font-size: 12pt;
+    color: rgba(255, 255, 255, 0.84);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.metricStatHint {
+    font-size: 10pt;
+    color: rgba(255, 255, 255, 0.60);
+}
+
+.metricStatValue {
+    font-size: 12pt;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.metricCompact {
+    display: inline-block;
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.metricUnmappedGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+}
+
+.metricUnmappedItem {
+    background: rgba(19, 28, 43, 0.70);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.metricUnmappedKey {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.64);
+    margin-bottom: 6px;
+}
+
+.metricUnmappedValue {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.metricFooter {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 400px) {
+    .metricUnmappedGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .metricUnmappedGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.matchupContainer {
+    width: min(400px, 92vw);
+    max-height: min(500px, 86vh);
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(10, 15, 23, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+}
+
+.matchupHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 16px 10px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.matchupTitleWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    width: 100%;
+}
+
+.matchupTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    gap: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    text-shadow: 0 0 4px black;
+}
+
+.matchupTitle img {
+    max-height: 80px;
+    max-width: 80px;
+    top: calc(50% - 40px);
+    left: calc(50% - 40px);
+    position: absolute;
+    z-index: 2;
+}
+
+.matchupHeader {
+    background: linear-gradient(to bottom, var(--matchup-cA) 0%, var(--matchup-cB) 50%, var(--matchup-cA) 100%);
+    position: relative;
+}
+
+.matchupHeader::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, var(--matchup-cC) 0%, var(--matchup-cD) 50%, var(--matchup-cC) 100%);
+    mask: linear-gradient(to right, transparent 0%, black 100%);
+    -webkit-mask: linear-gradient(to right, transparent 0%, black 100%);
+}
+
+.matchupTitle span {
+    text-shadow: 0 0 4px rgb(0,0,0);
+    z-index: 3;
+    position: relative;
+}
+
+.matchupSubtitle {
+    font-size: 10pt;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.matchupCloseButton {
+    width: 25px;
+    height: 25px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 22px;
+    line-height: 0;
+    cursor: pointer;
+    position: relative;
+    z-index: 4;
+}
+
+    .matchupCloseButton:hover {
+        background: rgba(255, 255, 255, 0.10);
+    }
+
+.matchupCloseButton:before, .matchupCloseButton:after {
+    content: '';
+    height: 10px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.92);
+    position: absolute;
+    top: calc(50% - 5px);
+    left: calc(50% - 1px);
+    transform: rotate(45deg);
+}
+
+.matchupCloseButton:after {
+    transform: rotate(-45deg);
+}
+
+.matchupBody {
+    padding: 14px 16px 16px 16px;
+    overflow: auto;
+}
+
+.matchupContentGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.matchupCard {
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    padding: 12px;
+}
+
+.matchupCardLabel {
+    font-size: 10pt;
+    color: rgba(255, 255, 255, 0.62);
+    margin-bottom: 6px;
+}
+
+.matchupCardValue {
+    font-size: 14pt;
+    color: rgba(255, 255, 255, 0.92);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.matchupSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.matchupSectionTitle {
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    color: rgba(255, 255, 255, 0.82);
+    text-transform: uppercase;
+}
+
+.matchupGamesList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.matchupGameRow {
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    padding: 12px;
+}
+
+.matchupGameTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.matchupGameDate {
+    font-size: 10pt;
+    color: rgba(255, 255, 255, 0.78);
+    font-weight: 600;
+}
+
+.matchupGameBadges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.matchupBadge {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.70);
+}
+
+.matchupScoreGrid {
+    display: grid;
+    gap: 8px;
+}
+
+.matchupTeamLine {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.matchupTeamName {
+    font-size: 12pt;
+    color: rgba(255, 255, 255, 0.90);
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.matchupTeamScore {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.92);
+    font-weight: 800;
+}
+
+.matchupGameFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.matchupVenue {
+    color: rgba(255, 255, 255, 0.60);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.matchupWinner {
+    color: rgba(255, 255, 255, 0.78);
+    white-space: nowrap;
+}
+
+.matchupNotPlayed {
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.70);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 13px;
+}
+
+.matchupEmptyState {
+    padding: 16px 6px 6px 6px;
+}
+
+.matchupEmptyTitle {
+    font-size: 16px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 8px;
+}
+
+.matchupEmptyText {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.35;
+}
+
+.matchupEmptyInline {
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.70);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 13px;
+}

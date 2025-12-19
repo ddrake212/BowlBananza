@@ -1,0 +1,176 @@
+﻿:root {
+    --charcoal: #0a0f17;
+    --slate: #131c2b;
+    --steel: #1b2435;
+    --loader-size: max(25%, 80px);
+    --animation-duration: 4.0s;
+}
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+
+.games {
+    background-image: url("../Images/gamesBG.png");
+}
+
+.home, .login, .register, .changepw, .forgotpw {
+    background-image: url("../Images/homeBG.png");
+}
+
+.commish {
+    background-image: url("../Images/commishBG.webp");
+}
+
+.preferences {
+    background-image: url("../Images/settingsBG.webp");
+}
+
+.history {
+    background-image: url("../Images/historyBG.webp");
+}
+
+.test {
+    background-image: url("../Images/gamesBG.png");
+}
+
+.AppContainer {
+    position: relative;
+    height: 100%;
+}
+
+.contentHolder {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.panelGlowSVG {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transition: background-color .25s ease;
+}
+
+.panelGlowSVG line {
+    animation: glowPulse 3.5s ease-in-out infinite;
+    stroke: var(--glow-color);
+    transition: stroke 0.25s ease, filter 0.25s ease;
+    /* Use CSS var in the filter */
+    filter: drop-shadow(0 0 8px var(--glow-color)) drop-shadow(0 0 10px var(--glow-color));
+}
+
+.panelGlowSVG polygon {
+    animation: glowPulse 3.5s ease-in-out infinite;
+    animation: glowPulse 3.5s ease-in-out infinite;
+    stroke: var(--glow-color);
+    fill: var(--glow-color);
+    transition: stroke 0.25s ease, filter 0.25s ease, fill 0.25s ease;
+    filter: drop-shadow(0 0 8px var(--glow-color)) drop-shadow(0 0 10px var(--glow-color));
+}
+
+.panelGlowSVG circle {
+    animation: glowPulse 3.5s ease-in-out infinite;
+    animation: glowPulse 3.5s ease-in-out infinite;
+    stroke: var(--glow-color);
+    fill: var(--glow-color);
+    transition: stroke 0.25s ease, filter 0.25s ease, fill 0.25s ease;
+    filter: drop-shadow(0 0 8px var(--glow-color)) drop-shadow(0 0 10px var(--glow-color));
+}
+
+@keyframes glowPulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+/* --- Main Scanner Container --- */
+.gridScanner {
+    position: relative;
+    width: var(--loader-size);
+    height: var(--loader-size);
+    /* Apply a global glow effect to the entire scanner */
+    filter: drop-shadow(0 0 5px var(--orange));
+}
+
+/* --- Individual Scanning Layers --- */
+.layer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d; /* Allows nested 3D transforms */
+    border: .5rem solid var(--orange); /* Thin line border */
+    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) scale(1);
+    border-radius: 100%;
+    /* Set the common rotation animation */
+    animation-name: gridRotate;
+    animation-duration: var(--animation-duration);
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+/* --- Layer Specific Sizes and Speeds --- */
+
+/* Layer 1: Largest, slowest rotation, slight blur for atmosphere */
+.layer1 {
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    filter: blur(0.5px);
+    animation-duration: calc(var(--animation-duration) * 1.5); /* Slower */
+}
+
+/* Layer 2: Medium size, medium speed, higher opacity */
+.layer2 {
+    width: 70%;
+    height: 70%;
+    opacity: 1;
+    animation-duration: var(--animation-duration); /* Normal speed */
+    /* Starting point offset for visual separation */
+    transform: translate(-50%, -50%) rotateX(45deg) rotateY(-45deg) scale(1);
+}
+
+/* Layer 3: Smallest size, fastest rotation, strong color */
+.layer3 {
+    width: 40%;
+    height: 40%;
+    border: 2px solid var(--orange); /* Thicker line */
+    opacity: 1;
+    animation-duration: calc(var(--animation-duration) * 0.7); /* Faster */
+    /* Starting point offset */
+    transform: translate(-50%, -50%) rotateX(-45deg) rotateY(45deg) scale(1);
+}
+
+
+/* --- The Keyframe Animation (Complex 3D Rotation) --- */
+@keyframes gridRotate {
+    0% {
+        transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+    }
+
+    100% {
+        /* Rotate on both X and Y axes for a constant, tumbling effect */
+        transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg);
+    }
+}

@@ -1,0 +1,439 @@
+﻿.wrapper {
+    width: 100%;
+    padding: 16px;
+}
+
+/* --- Leader card --- */
+
+.leaderCard {
+    border-radius: 14px;
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    background: rgba(10, 15, 23, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(0, 255, 255, 0.06);
+}
+
+.leaderHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.leaderTitle {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+}
+
+.leaderMeta {
+    font-size: 10pt;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+.leaderBody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* --- Leaderboard rows (rank | name | points) --- */
+
+.leaderRow {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) auto; /* ✅ minmax prevents overflow */
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.leaderRank {
+    font-size: 14pt;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    opacity: 0.95;
+    white-space: nowrap;
+}
+
+.leaderMain {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0; /* ✅ required for children to shrink inside grid */
+}
+
+.leaderAvatars {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leaderAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+.leaderAvatarFallback {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.leaderAvatarFallback:empty {
+    display: none;
+}
+
+.leaderNames {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0; /* ✅ */
+}
+
+.leaderChip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 12pt;
+    background: color-mix(in srgb, var(--accentColor) 80%, transparent);
+    border: 1px solid var(--accentColor);
+    box-shadow: inset 0 0 10px color-mix(in srgb, var(--accentColor) 80%, transparent);
+    /* ✅ keep it from forcing overlap */
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leaderTieText {
+    font-size: 12px;
+    opacity: 0.65;
+    font-weight: 700;
+}
+
+.leaderPoints {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    white-space: nowrap;
+    justify-content: flex-end;
+    text-align: right;
+    padding: 6px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.leaderScoreLabel {
+    font-size: 10pt;
+    opacity: 0.7;
+    font-weight: 700;
+}
+
+.leaderScoreValue {
+    font-size: 14pt;
+    font-weight: 900;
+}
+
+@media (max-width: 560px) {
+    .leaderRow {
+        grid-template-columns: 64px minmax(0, 1fr);
+        grid-template-areas:
+            "rank main"
+            "rank points";
+        align-items: start;
+        row-gap: 10px;
+    }
+
+    .leaderRank {
+        grid-area: rank;
+        align-self: center;
+        font-size: 13pt;
+    }
+
+    .leaderMain {
+        grid-area: main;
+        justify-content: end
+    }
+
+    .leaderPoints {
+        grid-area: points;
+        justify-self: end;
+        width: fit-content;
+    }
+
+    .leaderAvatar,
+    .leaderAvatarFallback {
+        width: 36px;
+        height: 36px;
+    }
+
+    .leaderChip {
+        font-size: 11pt;
+    }
+}
+
+/* --- Collapsible leaderboard --- */
+
+.leaderToggle {
+    margin-top: 10px;
+    width: 100%;
+    cursor: pointer;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+    background: rgba(0, 255, 255, 0.10);
+    border: 1px solid rgba(0, 255, 255, 0.22);
+    box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.10);
+}
+
+    .leaderToggle:hover {
+        background: rgba(0, 255, 255, 0.14);
+    }
+
+.leaderCollapsible {
+    margin-top: 10px;
+    display: grid;
+    gap: 10px;
+    /* Smooth slide */
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: max-height 280ms ease, opacity 200ms ease, transform 200ms ease;
+    will-change: max-height, opacity, transform;
+}
+
+.leaderCollapsibleOpen {
+    max-height: 1200px; /* big enough for your list */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.leaderCollapsibleClosed {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+
+/* --- Table --- */
+
+.tableScroller {
+    width: 100%;
+    overflow: auto;
+    border-radius: 14px;
+}
+
+.table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 14pt;
+}
+
+    /* Sticky header row */
+    .table thead {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+        .table thead tr {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+.th {
+    padding: 10px 12px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    background: rgba(10, 15, 23, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tbody {
+    background: rgba(10, 15, 23, 0.35);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.td {
+    padding: 10px 12px;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Teams cell fills full TD */
+.tdTeams {
+    padding: 0;
+}
+
+/* --- User header styling --- */
+
+.userHeaderTh {
+    padding: 0 1rem !important;
+    text-align: center;
+    font-weight: 800;
+    box-shadow: inset 0 0 6px 3px rgba(255, 255, 255, 0.14);
+}
+
+/* --- User picks --- */
+
+.userCellContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    font-weight: 800;
+}
+
+.userCellCorrect {
+    background: rgba(0, 255, 153, 0.18);
+    box-shadow: inset 0 0 14px rgba(0, 255, 153, 0.3);
+}
+
+.userCellIncorrect {
+    background: rgba(255, 0, 51, 0.18);
+    box-shadow: inset 0 0 14px rgba(255, 0, 51, 0.3);
+}
+
+.userCellPending {
+    background: transparent;
+}
+
+.userCellEmpty {
+    background: transparent;
+    opacity: 0.55;
+}
+
+/* --- Teams cell styling --- */
+
+.teamsCell {
+    width: 100%;
+    height: 100%;
+    padding: 8px 10px;
+    background: linear-gradient( 90deg, color-mix(in srgb, var(--awayColor) 22%, transparent) 0%, rgba(10, 15, 23, 0.25) 50%, color-mix(in srgb, var(--homeColor) 22%, transparent) 100% );
+    border-left: 6px solid color-mix(in srgb, var(--awayColor) 45%, transparent);
+    border-right: 6px solid color-mix(in srgb, var(--homeColor) 45%, transparent);
+}
+
+.teamsInner {
+    display: grid;
+    grid-template-columns: 34px 1fr 34px;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.teamSide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.teamLogo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.35));
+}
+
+.teamLogoFallback {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.teamsText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.teamsTextAway {
+    opacity: 0.95;
+}
+
+.teamsTextVs {
+    opacity: 0.55;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.teamsTextHome {
+    opacity: 0.95;
+}
+
+/* --- Score cell --- */
+
+.scoreCellInner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+}
+
+.scoreCellPending {
+    background: transparent;
+    opacity: 0.7;
+}
+
+.scoreCellFinal {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+/* --- Empty state --- */
+
+.emptyState {
+    padding: 48px;
+    margin: 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--orange);
+    background: var(--bg0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 14px;
+    border: 1px solid var(--borderMed);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(0, 255, 255, 0.06);
+}

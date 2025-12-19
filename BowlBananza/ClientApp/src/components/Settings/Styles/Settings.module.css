@@ -1,0 +1,327 @@
+﻿.preferences {
+    width: 100%;
+    padding: 16px;
+}
+
+.header {
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: 16pt;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.subtitle {
+    margin-top: 4px;
+    font-size: 12pt;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+@media (min-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.card {
+    border-radius: 14px;
+    padding: 14px;
+    background: rgba(10, 15, 23, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(0, 255, 255, 0.06);
+}
+
+.cardTitle {
+    font-size: 12pt;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* ---------------- Upload buttons ---------------- */
+
+.uploadRow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.uploadButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12pt;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.92);
+}
+
+    .uploadButton:hover {
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+.secondaryButton {
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12pt;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.88);
+}
+
+    .secondaryButton:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+/* ---------------- Errors ---------------- */
+
+.error {
+    margin: 8px 0 10px;
+    font-size: 12px;
+    color: rgba(255, 120, 120, 0.95);
+}
+
+/* ---------------- Preview ---------------- */
+
+.previewBox {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.20);
+    overflow: hidden;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.previewPlaceholder {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* Circular avatar preview */
+
+.avatarPreviewRing {
+    aspect-ratio: 1/1;
+    height: 90%;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(0, 255, 255, 0.06);
+}
+
+.avatarPreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------------- Cropper ---------------- */
+
+.cropperShell {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cropperArea {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+    /* react-easy-crop internal elements */
+    .cropperArea > * {
+        width: 100%;
+        height: 100%;
+    }
+
+.cropControls {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 12px;
+}
+
+.zoomRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.zoomLabel {
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.78);
+    width: 44px;
+}
+
+.zoomSlider {
+    flex: 1;
+}
+
+.cropBtnRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+/* Primary action button (Use This) */
+
+.primaryButton {
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: white;
+    background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+    transition: box-shadow .2s ease;
+}
+
+    .primaryButton:hover {
+        box-shadow: 3px 3px 10px 2px rgba(0,0,0,0.6);
+    }
+
+/* ---------------- Color picker ---------------- */
+
+.pickerWrap {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.20);
+    padding: 10px;
+}
+
+    .pickerWrap > div {
+        width: 100% !important;
+    }
+
+.colorRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.swatch {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.colorText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ---------------- Meta text ---------------- */
+
+.meta {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin-top: 10px;
+}
+
+.metaLabel {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.metaValue {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.80);
+}
+
+.colorValue {
+    font-size: 14px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.hint {
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.62);
+}
+
+/* ---------------- Save button ---------------- */
+
+.saveBtn,
+.secondaryBtn {
+    padding: .2rem .75rem;
+    border-radius: 1rem;
+    background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+    border-color: var(--orange);
+    margin-top: 1rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow .2s ease;
+}
+
+    .saveBtn:hover {
+        box-shadow: 3px 3px 10px 2px rgba(0,0,0,0.6);
+    }
+
+    .saveBtn:before,
+    .secondaryBtn:before {
+        content: '';
+        position: absolute;
+        background: var(--dark-orange);
+        height: 100%;
+        width: 0%;
+        top: 0;
+        right: 0%;
+        transition: width .2s ease;
+    }
+
+    .saveBtn > *,
+    .secondaryBtn > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    .saveBtn:not([disabled]):hover:before,
+    .secondaryBtn:not([disabled]):hover:before {
+        width: 100%;
+    }

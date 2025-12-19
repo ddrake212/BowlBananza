@@ -1,0 +1,443 @@
+﻿:root {
+    --orange: rgb(253,99,39);
+    --grey: rgb(53,56,66);
+    --dark-orange: rgb(204,69,32);
+}
+
+.inputError {
+    color: yellow;
+    transform: translateY(-1rem);
+}
+
+.textFlex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.googleLogo {
+    height: 1.25rem;
+    aspect-ratio: 1 / 1;
+    background-image: url("../../../Images/google-color.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute !important;
+    top: .85rem;
+    left: .75rem;
+}
+
+.miniLoginLogo {
+    background-image: url("../../../Images/logo.webp");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 120px;
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+    touch-action: none;
+}
+
+.loginSplitter {
+    border-color: var(--orange);
+    background:var(--orange);
+    margin-top: 0;
+    display: none;
+}
+
+.loginLogo {
+    background-image: url("../../../Images/logo.webp");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+    touch-action: none;
+    transition: transform .2s ease, width .2s ease;
+}
+
+.flexCol {
+    display: flex;
+    flex-direction:column;
+}
+
+.formHolder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.form {
+    padding: 3rem;
+    background: linear-gradient(225deg, rgba(205, 205, 205, .25), rgba(0, 0, 0, 0.5));
+    border-radius: 1rem;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0px 0px 5px 5px var(--orange), -6px 6px 14px 6px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: min(90%, 600px);
+    height: min(90%, 500px);
+}
+
+.form form {
+    width: 100%;
+}
+
+.form input:not([type="checkbox"]) {
+    border: 1px solid var(--orange);
+    padding: .25rem .75rem;
+    padding-left: 2.75rem;
+    border-radius: 1rem;
+    background-color: var(--grey);
+    color: var(--orange);
+    margin-bottom: 1rem;
+    width: 100%;
+    font-size: 16pt;
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 1.5rem;
+}
+
+input.person {
+    background-image: url("../../../Images/Person.png");
+}
+
+input.email {
+    background-image: url("../../../Images/Email.png");
+}
+
+input.password {
+    background-image: url("../../../Images/Password.png");
+}
+
+input.password[type="text"] {
+    font-family: 'Oswald', sans-serif;
+}
+
+.form input::placeholder {
+    color: var(--orange);
+}
+
+.loginForm {
+    width: min(90%, 600px);
+    height: min(90%, 550px);
+    min-height: 550px;
+}
+
+.registerForm {
+    height: min(90%, 750px);
+    min-height: 750px;
+}
+
+.forgotpwForm {
+    height: min(90%, 500px);
+    min-height: 500px;
+}
+
+.forgortPWFormLogo {
+    animation: skewLeft .75s ease forwards;
+}
+
+.registerFormLogo {
+    animation: skewRight .75s ease forwards;
+}
+
+.loginFormLogo {
+    animation: unSkew .75s ease forwards;
+}
+
+.loginFormLogoPW {
+    animation: unSkewLeft .75s ease forwards;
+}
+
+.loginLogoHolder {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+
+@keyframes skewRight {
+    0% {
+        transform: rotateY(0deg) translateX(0);
+        width: 100%;
+    }
+    100% {
+        transform: perspective(1000px) rotateY(-20deg) translateX(3rem);
+        width: calc(100% - 3rem);
+    }
+}
+
+@keyframes skewLeft {
+    0% {
+        transform: rotateY(0deg) translateX(0);
+        width: 100%;
+    }
+
+    100% {
+        transform: perspective(1000px) rotateY(20deg) translateX(-3rem);
+        width: calc(100% - 3rem);
+    }
+}
+
+@keyframes unSkew {
+    0% {
+        transform: perspective(1000px) rotateY(-20deg) translateX(3rem);
+        width: calc(100% - 3rem);
+    }
+    100% {
+        transform: rotateY(0deg) translateX(0);
+        width: 100%;
+    }
+}
+
+@keyframes unSkewLeft {
+    0% {
+        transform: perspective(1000px) rotateY(20deg) translateX(-3rem);
+        width: calc(100% - 3rem);
+    }
+
+    100% {
+        transform: rotateY(0deg) translateX(0);
+        width: 100%;
+    }
+}
+
+.form button {
+    background: linear-gradient(var(--orange), var(--dark-orange));
+    text-align: center;
+    color: rgb(255,245,218);
+    font-weight: bold;
+    padding: .5rem;
+    width: 100%;
+    border-radius: 2rem;
+    border: 0;
+    margin-top: 1rem;
+    position:relative;
+    overflow: hidden;
+    transition: box-shadow .2s ease;
+    font-size: 18pt;
+}
+
+.form button:before {
+    content: '';
+    background: var(--dark-orange);
+    height:100%;
+    width: 0%;
+    border-radius: inherit;
+    position:absolute;
+    left:100%;
+    transition: width .2s ease,left .2s ease,box-shadow .2s ease;
+    top: 0px;
+    z-index: 1;
+}
+
+.form button:not([disabled]):hover {
+    box-shadow: 3px 3px 10px 3px rgba(0,0,0,0.6);
+}
+
+.form button:not([disabled]):hover:before {
+    width: 100%;
+    left: 0;
+}
+
+.form button > * {
+    position: relative;
+    z-index:2;
+    font-weight: bold;
+}
+
+.buttonGrp {
+    width: calc(100% - 6rem);
+    display: flex;
+    gap: 1rem;
+    position: absolute;
+    bottom: 1rem;
+}
+
+.buttonGrp button {
+    font-size: 14pt;
+}
+
+.btnLink {
+    background: transparent !important;
+}
+
+.btnLink > * {
+    color: var(--orange);
+}
+
+.btnLink:before {
+    background: white !important;
+}
+
+.link > * {
+    color: var(--orange);
+}
+
+.link {
+    text-align: left !important;
+    background: transparent !important;
+    padding: 0px !important;
+    font-size: 12pt !important;
+    margin-top: 0 !important;
+    margin-bottom: 1rem;
+}
+
+.link:before {
+    display:none;
+}
+
+.link:hover {
+    box-shadow:none !important;
+}
+
+.link:hover > * {
+    color: var(--dark-orange);
+}
+
+.inputGroup {
+    display: flex;
+    gap: 1rem;
+}
+
+.rememberRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  color: #e5e7eb;
+  user-select: none;
+  width: 100%;
+}
+
+.forgotPW {
+    margin: 0;
+    margin-top: .75rem !important;
+    text-align: right !important;
+}
+
+@media (max-width: 280px) {
+    .forgotPW {
+        text-align: left !important;
+    }
+
+    .textFlex {
+        flex-direction: column;
+    }
+}
+
+.rememberCheckbox + label {
+    margin: 0;
+}
+
+/* base custom checkbox */
+.rememberCheckbox {
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(248, 250, 252, 0.4);
+    background: rgba(15, 23, 42, 0.85); /* dark slate */
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 4px 10px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
+}
+
+.rememberCheckbox:hover {
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.4),
+    0 4px 14px rgba(0, 0, 0, 0.8);
+}
+
+/* checked state */
+.rememberCheckbox:checked {
+  background: linear-gradient(var(--orange), var(--dark-orange));  /* orange gradient */
+  border-color: #fed7aa;
+  box-shadow:
+    0 0 0 2px rgba(249, 115, 22, 0.35),
+    0 6px 18px rgba(0, 0, 0, 0.9);
+  transform: translateY(-1px);
+}
+
+/* checkmark */
+.rememberCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px 4px 3px 4px;
+  border-right: 2px solid #111827;
+  border-bottom: 2px solid #111827;
+  transform: rotate(45deg);
+  top: 0px;
+}
+
+/* focus ring for keyboard users */
+.rememberCheckbox:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(15, 23, 42, 1),
+    0 0 0 4px rgba(249, 115, 22, 0.75);
+}
+
+
+@media (max-width: 560px) {
+    .form {
+        height: 100%;
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .inputGroup {
+        display: block;
+    }
+
+    .loginSplitter {
+        display: block;
+    }
+
+    .btnLink {
+        padding-left: 2rem !important;
+    }
+}
+
+.loginError {
+    position: absolute;
+    top: 5rem;
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+.form button[disabled] {
+    opacity: .7;
+}
+
+@media (max-height: 750px) {
+    .formHolder.registerHolder {
+        align-items:initial;
+    }
+}
+
+@media (max-height: 550px) {
+    .formHolder:not(.registerHolder) {
+        align-items: initial;
+    }
+}
