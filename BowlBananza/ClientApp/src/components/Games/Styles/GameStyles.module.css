@@ -595,8 +595,9 @@
     flex-direction: column;
 }
 
-.metricDark:not(:hover) {
+.metricDark {
     color: rgba(0, 0, 0, 0.95) !important;
+    text-shadow: 0 0 4px white !important;
 }
 
 .metricHeader {
@@ -629,12 +630,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 0 4px black;
 }
 
 .metricSubTitle {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.72);
     line-height: 1.35;
+    text-shadow: 0 0 4px black;
 }
 
 .metricCloseButton {

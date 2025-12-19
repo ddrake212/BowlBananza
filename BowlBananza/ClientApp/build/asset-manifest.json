@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.b5553b9f.css",
+    "main.css": "/static/css/main.f5c99164.css",
     "main.js": "/static/js/main.a691caf7.js",
     "static/media/Person.png": "/static/media/Person.50b4cd41c13bcb17383d.png",
     "static/media/gamesBG.png": "/static/media/gamesBG.85e4b74da1fbd4c2591c.png",
@@ -13,11 +13,11 @@
     "static/media/commishBG.webp": "/static/media/commishBG.b8b58380831896296b0d.webp",
     "index.html": "/index.html",
     "static/media/google-color.svg": "/static/media/google-color.f2140b4ca51621118fd6.svg",
-    "main.b5553b9f.css.map": "/static/css/main.b5553b9f.css.map",
+    "main.f5c99164.css.map": "/static/css/main.f5c99164.css.map",
     "main.a691caf7.js.map": "/static/js/main.a691caf7.js.map"
   },
   "entrypoints": [
-    "static/css/main.b5553b9f.css",
+    "static/css/main.f5c99164.css",
     "static/js/main.a691caf7.js"
   ]
 }

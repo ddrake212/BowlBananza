@@ -39,7 +39,6 @@ namespace BowlBananza.Controllers
         }
 
         [HttpGet("userprops")]
-        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, NoStore = false)]
         public async Task<ActionResult<List<UserPropsDto>>> UserProps()
         {
             var userProps = await db.UserPreferences
