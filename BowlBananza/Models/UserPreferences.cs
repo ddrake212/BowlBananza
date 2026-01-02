@@ -25,6 +25,7 @@ namespace BowlBananza.Models
             public decimal? Zoom { get; set; }
             public decimal? Cropx { get; set; }
             public decimal? Cropy { get; set; }
+            public int? LeagueId { get; set; }
 
             // Optional navigation property if you have a Users table
             // public User User { get; set; }

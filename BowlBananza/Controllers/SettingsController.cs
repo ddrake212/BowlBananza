@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using static Org.BouncyCastle.Math.EC.ECCurve;
@@ -28,7 +29,7 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 namespace BowlBananza.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class SettingsController : Controller
     {
         private readonly ISyncDataService _syncService;
@@ -45,14 +46,40 @@ namespace BowlBananza.Controllers
             cfbClient = new CollegeFootballDataHelper(configuration);
         }
 
+        private int LeagueId()
+        {
+            var leagueId = -1;
+            int.TryParse(User.FindFirstValue("LeagueId"), out leagueId);
+            return leagueId;
+        }
+
+        public bool NotAuth()
+        {
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var username = User.FindFirstValue("Email");
+
+            if (userId == -1 || string.IsNullOrEmpty(username))
+            {
+                return true;
+            }
+            return false;
+        }
+
         [HttpGet("getData")]
         public async Task<ActionResult<SettingsData>> GetData()
         {
+            if (NotAuth())
+            {
+                return Unauthorized();
+            }
             var data = new SettingsData();
 
-            var userId = HttpContext.Session.GetInt32("UserId");
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var leagueId = LeagueId();
             var prefs = await db.UserPreferences
-                .FirstOrDefaultAsync(p => p.UserId == userId);
+                .FirstOrDefaultAsync(p => p.UserId == userId && p.LeagueId == leagueId);
 
             if (prefs != null)
             {
@@ -68,26 +95,33 @@ namespace BowlBananza.Controllers
         }
 
         [HttpPost("savePreferences")]
-        public async Task SavePreferencesAsync([FromBody] SettingsData data)
+        public async Task<ActionResult> SavePreferencesAsync([FromBody] SettingsData data)
         {
+            if (NotAuth())
+            {
+                return Unauthorized();
+            }
             var color = data.Color;
             var imageBase64 = data.ImageBase64;
             var originalImageBase64 = data.OriginalImageBase64;
-            var userId = HttpContext.Session.GetInt32("UserId");
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var leagueId = LeagueId();
             var prefs = await db.UserPreferences
-                .FirstOrDefaultAsync(p => p.UserId == userId);
+                .FirstOrDefaultAsync(p => p.UserId == userId && p.LeagueId == leagueId);
 
             if (prefs == null)
             {
                 prefs = new UserPreferences
                 {
-                    UserId = userId.GetValueOrDefault(-1),
+                    UserId = userId,
                     Color = color,
                     Image = imageBase64,
                     OriginalImage = originalImageBase64,
                     Zoom = data.Zoom,
                     Cropx = data.Cropx,
-                    Cropy = data.Cropy
+                    Cropy = data.Cropy,
+                    LeagueId = leagueId
                 };
 
                 db.UserPreferences.Add(prefs);
@@ -104,8 +138,8 @@ namespace BowlBananza.Controllers
             }
 
             await db.SaveChangesAsync();
+            return Ok();
         }
-
     }
 
     public class SettingsData

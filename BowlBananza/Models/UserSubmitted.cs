@@ -9,5 +9,6 @@
         public int Year { get; set; }
 
         public bool Submitted { get; set; }
+        public int? LeagueId { get; set; }
     }
 }

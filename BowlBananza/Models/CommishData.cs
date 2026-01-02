@@ -11,6 +11,7 @@ namespace BowlBananza.Models
         public bool CanLoadTieBreak { get; set; }
         public bool CanUnlock { get; set; }
         public bool CanForceUpdate { get; set; }
+        public bool CanNudgeUsers { get; set; }
     }
 
     public class CommishUser

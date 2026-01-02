@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BowlBananza.Controllers
@@ -34,12 +35,20 @@ namespace BowlBananza.Controllers
             cfbClient = new CollegeFootballDataTestHelper(configuration);
         }
 
+        private int LeagueId()
+        {
+            var leagueId = -1;
+            int.TryParse(User.FindFirstValue("LeagueId"), out leagueId);
+            return leagueId;
+        }
+
         public bool NotAuth()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            var username = HttpContext.Session.GetString("Email");
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var username = User.FindFirstValue("Email");
 
-            if (userId == null || string.IsNullOrEmpty(username))
+            if (userId == -1 || string.IsNullOrEmpty(username))
             {
                 return true;
             }
@@ -51,7 +60,7 @@ namespace BowlBananza.Controllers
         {
             if (NotAuth())
             {
-                return Redirect("/");
+                return Unauthorized();
             }
             var year = SeasonHelper.GetCurrentSeasonYear();
             var metrics = await cfbClient.GetTeamMetricsAsync(year, team);
@@ -64,7 +73,7 @@ namespace BowlBananza.Controllers
         {
             if (NotAuth())
             {
-                return Redirect("/");
+                return Unauthorized();
             }
             var year = SeasonHelper.GetCurrentSeasonYear();
             var matchup = await cfbClient.GetTeamMatchupAsync(year, team1, team2);
@@ -80,19 +89,22 @@ namespace BowlBananza.Controllers
         {
             if (NotAuth())
             {
-                return Redirect("/");
+                return Unauthorized();
             }
-            var userId = HttpContext.Session.GetInt32("UserId");
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
             var year = SeasonHelper.GetCurrentSeasonYear();
-            var cS = db.UserSubmitted.FirstOrDefault(x => x.Year == year && x.UserId == userId);
+            var leagueId = LeagueId();
+            var cS = db.UserSubmitted.FirstOrDefault(x => x.Year == year && x.UserId == userId && x.LeagueId == leagueId);
 
             if (cS == null)
             {
                 UserSubmitted selection = new UserSubmitted
                 {
                     Year = year,
-                    UserId = userId.GetValueOrDefault(),
-                    Submitted = true
+                    UserId = userId,
+                    Submitted = true,
+                    LeagueId = leagueId
                 };
                 db.UserSubmitted.Add(selection);
             } else
@@ -111,25 +123,30 @@ namespace BowlBananza.Controllers
         {
             if (NotAuth())
             {
-                return Redirect("/");
+                return Unauthorized();
             }
-            var userId = HttpContext.Session.GetInt32("UserId");
+            int userId = -1;
+            var leagueId = LeagueId();
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
             var year = SeasonHelper.GetCurrentSeasonYear();
+            var bowlData = db.BowlData.FirstOrDefault(b => b.Year == year && b.LeagueId == leagueId);
+            var isLocked = bowlData != null ? bowlData.IsLocked.GetValueOrDefault(false) : false;
 
-            var alreadySubmitted = db.UserSubmitted.Any(x => x.Year == year && x.UserId == userId && x.Submitted);
+            var alreadySubmitted = db.UserSubmitted.Any(x => x.Year == year && x.UserId == userId && x.Submitted && x.LeagueId == leagueId);
+            var cS = db.GameSelections.FirstOrDefault(x => x.Year == year && x.User == userId && x.GameId == game && x.LeagueId == leagueId);
 
-            if (!alreadySubmitted)
+            if (!((isLocked || alreadySubmitted) && cS != null))
             {
-                var cS = db.GameSelections.FirstOrDefault(x => x.Year == year && x.User == userId && x.GameId == game);
-
+            
                 if (cS == null)
                 {
                     GameSelection selection = new GameSelection
                     {
                         Year = year,
-                        User = userId.GetValueOrDefault(),
+                        User = userId,
                         GameId = game,
-                        TeamId = team
+                        TeamId = team,
+                        LeagueId = leagueId
                     };
                     db.GameSelections.Add(selection);
                 }
@@ -150,7 +167,7 @@ namespace BowlBananza.Controllers
         {
             if (NotAuth())
             {
-                return Redirect("/");
+                return Unauthorized();
             }
             try
             {
@@ -166,10 +183,13 @@ namespace BowlBananza.Controllers
                 {
                     var year = SeasonHelper.GetCurrentSeasonYear();
 
-                    var userId = HttpContext.Session.GetInt32("UserId");
-                    selections = db.GameSelections.Where(x => x.Year == year && x.User == userId).ToList();
+                    var leagueId = LeagueId();
+                    int userId = -1;
+                    int.TryParse(User.FindFirstValue("UserId"), out userId);
+                    selections = db.GameSelections.Where(x => x.Year == year && x.User == userId && x.LeagueId == leagueId).ToList();
+                    var selectionHash = selections.Select(x => x.GameId).ToHashSet();
 
-                    var BowlData = db.BowlData.FirstOrDefault(x => x.Year == year);
+                    var BowlData = db.BowlData.FirstOrDefault(x => x.Year == year && x.LeagueId == leagueId);
 
                     if (BowlData == null)
                     {
@@ -178,12 +198,7 @@ namespace BowlBananza.Controllers
 
                     var seasonData = await cfbClient.GetSeasonDataAsync(BowlData.TieBreakerDate.GetValueOrDefault(BowlData.StartDate), year, SeasonType.Postseason);
 
-                    var submitted = db.UserSubmitted.Any(u =>
-                        u.UserId == userId && u.Submitted
-                        && u.Year == year
-                    );
-
-                    games = seasonData.Games;
+                    games = seasonData.Games.OrderByDescending(x => selectionHash.Contains(x.Id.Value)).ToList();
                     ICollection<Team> tResult = seasonData.Teams;
                     ICollection<TeamRecords> recordResult = seasonData.Records;
                     ICollection<PollWeek> rankResults = seasonData.Rankings;

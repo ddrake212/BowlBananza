@@ -7,6 +7,7 @@
         public int User { get; set; }      // Consider renaming to UserId if desired
         public int GameId { get; set; }
         public int TeamId { get; set; }
+        public int? LeagueId { get; set; }
     }
 
 }

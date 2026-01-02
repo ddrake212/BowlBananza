@@ -5,8 +5,9 @@ import styles from "./Styles/Form.module.css";
 interface GoogleProps {
     onSubmit: (success: boolean, email?: string) => void;
     startSubmit: () => void;
+    rtnPage?: string;
 }
-export default function GoogleLoginButton({ onSubmit, startSubmit }: GoogleProps) {
+export default function GoogleLoginButton({ onSubmit, startSubmit, rtnPage }: GoogleProps) {
     const navigate = useNavigate();
 
     const handleGoogleLogin = useCallback(() => {
@@ -61,7 +62,11 @@ export default function GoogleLoginButton({ onSubmit, startSubmit }: GoogleProps
 
                     if (apiRes.ok) {
                         onSubmit(true, profile.email);
-                        navigate("/home");
+                        if (rtnPage) {
+                            navigate(rtnPage);
+                        } else {
+                            navigate("/home");
+                        }
                     } else {
                         onSubmit(false);
                         navigate("/register", { state: { email: profile.email, logoAnimation: 1 } });
@@ -79,7 +84,7 @@ export default function GoogleLoginButton({ onSubmit, startSubmit }: GoogleProps
             alert("Error initializing Google login – see console.");
             onSubmit(false);
         }
-    }, [navigate, onSubmit, startSubmit]);
+    }, [navigate, onSubmit, rtnPage, startSubmit]);
 
     return (
         <button onClick={handleGoogleLogin} className={styles.btnLink}>

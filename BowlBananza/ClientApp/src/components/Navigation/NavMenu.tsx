@@ -3,10 +3,11 @@ import { Collapse, Container, Navbar, NavbarToggler, NavItem, NavLink } from 're
 import { Link, useNavigate } from 'react-router-dom';
 import './NavMenu.css';
 import { useAuth } from '../../hooks/useAuth';
+import { useCookies } from 'react-cookie';
 
 const NavMenu = () => {
     const [collapsed, setCollapsed] = useState(true);
-
+    const [, , removeCookie] = useCookies(['appUser']);
     const { isCommish, isInactive, isBowlActive } = useAuth();
 
     const navigate = useNavigate();
@@ -17,14 +18,16 @@ const NavMenu = () => {
 
 
     const logout = useCallback(async () => {
+        setCollapsed(true);
         const res = await fetch("/api/auth/logout", { method: "POST" });
         if (res.ok) {
+            removeCookie("appUser");
             navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate, removeCookie]);
 
     return (
-        <header style={{ position: 'relative', zIndex: 99999, height: '56px' }}>
+        <header style={{ position: 'sticky', left: 0, zIndex: 99999, height: '56px' }}>
             <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white mb-3" color="dark" dark>
                 <Container className="full-container">
                     <NavbarToggler onClick={toggleNavbar} className="mr-2"/>
@@ -36,7 +39,7 @@ const NavMenu = () => {
                             {
                                 !isInactive && isBowlActive && 
                                 <NavItem onClick={() => setCollapsed(true)}>
-                                    <NavLink tag={Link} className="text-light" to="/games">Game</NavLink>
+                                    <NavLink tag={Link} className="text-light" to="/games">Games</NavLink>
                                 </NavItem>
                             }
                             {

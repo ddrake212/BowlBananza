@@ -10,6 +10,8 @@ import {
 
 import styles from "./Styles/History.module.css";
 import { shouldUseDarkText } from "../../utils/colorUtils";
+import { useNavigate } from "react-router";
+import { ColorContext } from "../../contexts/ColorContext";
 
 export type History = {
     Id: number;
@@ -213,25 +215,56 @@ function YearSection({ year, rows }: { year: number; rows: History[] }) {
 export default function History() {
     const [historyByYear, setHistoryByYear] = useState<HistoryByYear>({});
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    const { setColor } = React.useContext(ColorContext) ?? { setColor: () => { } };
+
+    useEffect(() => {
+        setColor('#ffffff00');
+        const glowColors = [
+            "#00FFFF", // Cyan
+            "#008CFF", // Electric Blue
+            "#7A00FF", // Royal Purple
+            "#FF00FF", // Magenta
+            "#FF0099", // Hot Pink
+            "#FF0033", // Neon Red
+            "#FF7A00", // Amber Orange
+            "#F8FF00", // Neon Yellow
+            "#32FF00", // Lime Green
+            "#00FF99", // Aqua Green
+            "#ffffff00"
+        ];
+        const timeout = setInterval(() => {
+            const c = glowColors.shift();
+            glowColors.push(c ?? '');
+            setColor(c ?? '');
+        }, 5000);
+        return () => clearInterval(timeout);
+    }, [setColor]);
 
     useEffect(() => {
         const fetchHistory = async () => {
             setLoading(true);
             try {
-                const res = await fetch("/history/getData", {
+                const res = await fetch("/api/history/getData", {
                     headers: { Accept: "application/json" }
                 });
 
-                const text = await res.text();
+                if (res.status === 401) {
+                    navigate('/login', { state: { rtnPage: '/history' } });
+                } else {
 
-                let payload: unknown = text;
-                try {
-                    payload = JSON.parse(text);
-                } catch {
-                    payload = text;
+                    const text = await res.text();
+
+                    let payload: unknown = text;
+                    try {
+                        payload = JSON.parse(text);
+                    } catch {
+                        payload = text;
+                    }
+
+                    setHistoryByYear(safeParseHistoryByYear(payload));
                 }
-
-                setHistoryByYear(safeParseHistoryByYear(payload));
             } catch (err) {
                 console.error("Failed to load history", err);
                 setHistoryByYear({});
@@ -241,7 +274,7 @@ export default function History() {
         };
 
         fetchHistory();
-    }, []);
+    }, [navigate]);
 
     const years = useMemo(() => {
         return Object.keys(historyByYear)

@@ -4,6 +4,8 @@ import Cropper, { Area } from "react-easy-crop";
 import styles from "./Styles/Settings.module.css";
 import MainLoading from "../MainLoading";
 import { compressImageUnder2MB } from "../../utils/imageUtils";
+import { useNavigate } from "react-router";
+import { ColorContext } from "../../contexts/ColorContext";
 
 type PreferencesProps = {
     initialColor?: string;
@@ -22,7 +24,33 @@ export default function Settings({
     initialOriginalImageBase64 = "",
     onChange,
 }: PreferencesProps) {
+    const navigate = useNavigate();
     const [color, setColor] = useState(initialColor);
+
+    const { setColor: setColorMain } = React.useContext(ColorContext) ?? { setColor: () => { } };
+
+    useEffect(() => {
+        setColorMain('#ffffff00');
+        const glowColors = [
+            "#00FFFF", // Cyan
+            "#008CFF", // Electric Blue
+            "#7A00FF", // Royal Purple
+            "#FF00FF", // Magenta
+            "#FF0099", // Hot Pink
+            "#FF0033", // Neon Red
+            "#FF7A00", // Amber Orange
+            "#F8FF00", // Neon Yellow
+            "#32FF00", // Lime Green
+            "#00FF99", // Aqua Green
+            "#ffffff00"
+        ];
+        const timeout = setInterval(() => {
+            const c = glowColors.shift();
+            glowColors.push(c ?? '');
+            setColorMain(c ?? '');
+        }, 5000);
+        return () => clearInterval(timeout);
+    }, [setColorMain]);
 
     // FINAL saved avatar (cropped)
     const [imageBase64, setImageBase64] = useState<string | null>(initialImageBase64 || null);
@@ -51,11 +79,17 @@ export default function Settings({
 
     useEffect(() => {
         setLoading(true);
-        fetch("/settings/getData")
-            .then((resp) => resp.json())
+        fetch("/api/settings/getData")
+            .then((resp) => {
+                if (resp.status === 401) {
+                    navigate('/login', { state: { rtnPage: '/preferences' } });
+                } else {
+                    return resp.json();
+                }
+            })
             .then((result) => {
                 // You said you’ll update backend/types — these are the new names:
-                // result.ImageBase64 (cropped)
+                // result.ImageBase64 (cropped), { state: { rtnPage: '/history' } }
                 // result.OriginalImageBase64 (raw)
                 setImageBase64(result.ImageBase64 ?? null);
                 setOriginalImageBase64(result.OriginalImageBase64 ?? null);
@@ -65,7 +99,7 @@ export default function Settings({
             })
             .finally(() => setLoading(false));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialColor]);
+    }, [initialColor, navigate]);
 
     const previewSrc = useMemo(() => imageBase64 ?? "", [imageBase64]);
 
@@ -201,7 +235,7 @@ export default function Settings({
             cropy: crop.y
         };
 
-        const response = await fetch("/settings/savePreferences", {
+        const response = await fetch("/api/settings/savePreferences", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -211,10 +245,14 @@ export default function Settings({
         setLoading(false);
 
         if (!response.ok) {
-            const text = await response.text();
-            throw new Error(`Failed to save preferences: ${text}`);
+            if (response.status === 401) {
+                navigate('/login', { state: { rtnPage: '/preferences' } });
+            } else {
+                const text = await response.text();
+                throw new Error(`Failed to save preferences: ${text}`);
+            }
         }
-    }, [color, imageBase64, zoom, crop, originalImageBase64]);
+    }, [color, imageBase64, zoom, crop, originalImageBase64, navigate]);
 
     if (loading) return <MainLoading />;
 

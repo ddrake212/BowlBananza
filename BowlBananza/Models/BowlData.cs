@@ -9,4 +9,5 @@ public class BowlData
     public DateTime StartDate { get; set; }
     public DateTime? TieBreakerDate { get; set; }
     public bool? IsLocked { get; set; }
+    public int? LeagueId { get; set; }
 }

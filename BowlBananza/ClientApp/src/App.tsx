@@ -24,6 +24,7 @@ const App: React.FC = () => {
             <Layout>
                 <Routes>
                     <Route path="/" element={!checked ? <MainLoading showLogo /> : (!loggedIn ? <LoginForm /> : <Home />)} />
+                    <Route path="/index.html" element={!checked ? <MainLoading showLogo /> : (!loggedIn ? <LoginForm /> : <Home />)} />
                     <Route path="/login" element={<LoginForm />} />
                     <Route path="/register" element={<RegistrationForm />} />
                     <Route path="/forgotpw" element={<ForgotPW />} />

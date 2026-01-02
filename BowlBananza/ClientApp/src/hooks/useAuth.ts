@@ -9,6 +9,7 @@ type MeResponse = {
     isLocked: boolean;
     isInactive: boolean;
     isBowlActive: boolean;
+    permissionRequired: boolean;
 };
 
 export function useAuth() {
@@ -45,6 +46,7 @@ export function useAuth() {
         isSubmitted: user?.isSubmitted,
         isLocked: user?.isLocked,
         isInactive: user?.isInactive,
-        isBowlActive: user?.isBowlActive
+        isBowlActive: user?.isBowlActive,
+        permissionRequired: user?.permissionRequired
     };
 }

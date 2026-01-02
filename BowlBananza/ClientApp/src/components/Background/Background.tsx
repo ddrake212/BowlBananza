@@ -12,7 +12,7 @@ const Background = () => {
     const { color } = React.useContext(ColorContext) ?? { color: '#00000000' };
 
     let pName = pathname;
-    if (pName === '/') {
+    if (pName === '/' || pName === '/index.html') {
         pName = '/home';
     }
     return (

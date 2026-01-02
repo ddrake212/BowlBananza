@@ -1,18 +1,20 @@
 ﻿using BowlBananza.Data;
 using BowlBananza.Models;
 using BowlBananza.Models.BowlBananza.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
 namespace BowlBananza.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class HistoryController : Controller
     {
         private readonly AppDbContext db;
@@ -21,9 +23,34 @@ namespace BowlBananza.Controllers
             db = dbContext;
         }
 
+        private int LeagueId()
+        {
+            var leagueId = -1;
+            int.TryParse(User.FindFirstValue("LeagueId"), out leagueId);
+            return leagueId;
+        }
+
+        public bool NotAuth()
+        {
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var username = User.FindFirstValue("Email");
+
+            if (userId == -1 || string.IsNullOrEmpty(username))
+            {
+                return true;
+            }
+            return false;
+        }
+
         [HttpGet("getData")]
         public async Task<ActionResult<Dictionary<int, List<HistoryWithUser>>>> GetData()
         {
+            if (NotAuth())
+            {
+                return Unauthorized();
+            }
+
             var historyData = new List<History>
 {
     new History { Id = 1, UserId = 1, Year = 2022, Rank = 1, Points = 145 },
@@ -37,10 +64,12 @@ namespace BowlBananza.Controllers
     new History { Id = 9, UserId = 2, Year = 2024, Rank = 3, Points = 142 },
 };
 
+            var leagueId = LeagueId();
+            var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == leagueId).Select(x => x.UserId).ToHashSet();
             var rows = (
-                from h in db.History.AsNoTracking()
+                from h in db.History.AsNoTracking().Where(x => LeagueUsers.Contains(x.Id) && x.LeagueId == leagueId)
                 join u in db.BBUsers.Where(u => u.Inactive != true).AsNoTracking() on h.UserId equals u.Id
-                join p in db.UserPreferences.AsNoTracking() on u.Id equals p.UserId into up
+                join p in db.UserPreferences.AsNoTracking().Where(x => x.LeagueId == leagueId) on u.Id equals p.UserId into up
                 select new HistoryWithUser
                 {
                     Id = h.Id,

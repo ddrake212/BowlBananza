@@ -64,7 +64,13 @@ const Games = () => {
     useEffect(() => {
         setLoading(true);
         fetch('bb')
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status === 401) {
+                    navigate('/login', { state: { rtnPage: '/games'}});
+                } else {
+                    return resp.json()
+                }
+            })
             .then(result => {
                 setGames(result.games);
                 setTeams(result.teams);
@@ -100,7 +106,7 @@ const Games = () => {
                 setCurrentSelectedTeams(map);
                 setGameIndex(Math.max(0, startIndex));
             })
-            .catch(() => navigate('/'))
+            .catch((e) => { })
             .finally(() => setLoading(false));
     }, [setColor, navigate]);
 
@@ -117,7 +123,11 @@ const Games = () => {
             headers: {
                 "Content-Type": "application/json",
             }
-        }).catch(() => navigate('/'));
+        }).then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/games' } })
+            }
+        }).catch(() => { });
     }, [navigate]);
 
     const onSelect = useCallback((team: TeamInfo) => {
@@ -194,16 +204,28 @@ const Games = () => {
 
     const onCompare = useCallback(() => {
         fetch(`/bb/compare?team1=${encodeURIComponent(team1?.School ?? '')}&team2=${encodeURIComponent(team2?.School ?? '')}`)
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status === 401) {
+                    navigate('/login', { state: { rtnPage: '/games' } });
+                } else {
+                    return resp.json();
+                }
+            })
             .then(result => {
                 setTeamMatchup(result)
             })
-            .catch(() => navigate('/'));
+            .catch(() => { });
     }, [team1, team2, navigate]);
 
     const onStatsClicked = useCallback((team: TeamInfo) => {
         fetch(`/bb/metrics?team=${encodeURIComponent(team.School ?? '')}`)
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status === 401) {
+                    navigate('/login', { state: { rtnPage: '/games' } })
+                } else {
+                    return resp.json();
+                }
+            })
             .then(result => {
                 setTeamMetrics({
                     ...result,
@@ -213,14 +235,18 @@ const Games = () => {
                     Mascot: team.Mascot
                 })
             })
-            .catch(() => navigate('/'));
+            .catch(() => { });
     }, [navigate]);
 
     const submitChoices = useCallback(() => {
         setLoading(true);
-        fetch('/bb/submitChoices').then(() => {
-            navigate('/home');
-        }).catch(() => navigate('/'));
+        fetch('/bb/submitChoices').then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/games' } });
+            } else {
+                navigate('/home');
+            }
+        }).catch(() => { });
     }, [navigate]);
 
     if (loading) {
@@ -259,7 +285,7 @@ const Games = () => {
                         onStatsClicked={onStatsClicked}
                         showSubmit={selectedTeams.size === games.length && !showSubmitOverlay && !isSubmitted}
                         onSubmit={submitChoices}
-                        locked={(games[gameIndex]?.StartDate ?? today) <= today || Boolean((isLocked || isSubmitted) && currentSelectedTeams.get(games[gameIndex]?.Id ?? -1))}
+                        locked={new Date((games[gameIndex]?.StartDate ?? today)) <= today || Boolean((isLocked || isSubmitted) && currentSelectedTeams.get(games[gameIndex]?.Id ?? -1))}
                     />
                     <button className={styles.Next} disabled={gameIndex >= games.length - 1} onClick={() => changeGame(1)} />
                 </div>

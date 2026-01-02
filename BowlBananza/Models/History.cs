@@ -7,5 +7,6 @@
         public int Year { get; set; }
         public int Rank { get; set; }
         public int? Points { get; set; }
+        public int? LeagueId { get; set; }
     }
 }

@@ -1,8 +1,9 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { ColorContext } from '../../contexts/ColorContext';
 import { HomeData } from '../../types/homeTypes';
 import { GameInfo, TeamInfo } from '../../types/gameTypes';
 import MainLoading from '../MainLoading';
+import { useNavigate } from 'react-router';
 
 import {
     ColumnDef,
@@ -135,11 +136,16 @@ function ordinal(n: number): string {
     return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
 }
 
-async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
+async function fetchJson<T>(url: string, signal: AbortSignal, onUnauth: () => void): Promise<T> {
     const res = await fetch(url, { signal });
     if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        throw new Error(`Request failed (${res.status}) for ${url}${text ? `: ${text}` : ''}`);
+        if (res.status === 401) {
+            onUnauth();
+            throw new Error(`Request failed due to being unauthorized`);
+        } else {
+            const text = await res.text().catch(() => '');
+            throw new Error(`Request failed (${res.status}) for ${url}${text ? `: ${text}` : ''}`);
+        }
     }
     return res.json() as Promise<T>;
 }
@@ -181,6 +187,8 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [setColor]);
 
+    const navigate = useNavigate();
+
     // ✅ Parallel fetch:
     // - /home/getData (no UserProperties)
     // - /home/userprops (UserId, Color, Image)
@@ -189,11 +197,12 @@ export default function Home() {
 
         setLoading(true);
 
-        const mainPromise = fetchJson<HomeData>('/home/getData', controller.signal)
+        const mainPromise = fetchJson<HomeData>('/api/home/getData', controller.signal, () => navigate('/login'))
             .then(d => setData(d))
+            .catch(() => {})
             .finally(() => setLoading(false)); // unblock UI as soon as main data is ready
 
-        const propsPromise = fetchJson<UserProp[]>('/home/userprops', controller.signal)
+        const propsPromise = fetchJson<UserProp[]>('/api/home/userprops', controller.signal, () => navigate('/login'))
             .then(p => setUserProps(p))
             .catch(() => setUserProps([])); // fail-soft: no props
 
@@ -202,7 +211,7 @@ export default function Home() {
         void propsPromise;
 
         return () => controller.abort();
-    }, []);
+    }, [navigate]);
 
     const { teamById, teamNameById } = useMemo(
         () => buildTeamMaps(data?.Teams),
@@ -305,9 +314,15 @@ export default function Home() {
         return { ranked, topScore, gamesCompleted };
     }, [data, picksByGameId]);
 
-    const columns: ColumnDef<RowModel>[] = useMemo(() => {
-        const users = data?.Users ?? [];
+    const users = data?.Users ?? [];
 
+    const isNotFullyPicked = useCallback((rowData: Record<number, number | undefined>): boolean => {
+        return !users.reduce((t, x) => {
+            return t && Boolean(rowData[x.Id]);
+        }, true) ?? false;
+    }, [users]);
+
+    const columns: ColumnDef<RowModel>[] = useMemo(() => {
         const base: ColumnDef<RowModel>[] = [
             {
                 id: 'date',
@@ -475,7 +490,7 @@ export default function Home() {
             cell: ({ row }) => {
                 const pickedTeamId = row.original.picksByUserId[user.Id];
                 let pickedTeamName =
-                    pickedTeamId != null
+                    pickedTeamId != null && pickedTeamId !== -1
                         ? teamNameById.get(pickedTeamId) ?? `Team ${pickedTeamId}`
                         : '—';
 
@@ -483,7 +498,7 @@ export default function Home() {
                 const g = row.original.game;
                 const hasScore = g.AwayPoints != null && g.HomePoints != null;
 
-                if (!data?.IsLocked && user.Id !== data?.UserId && !hasScore) {
+                if (user.Id !== data?.UserId && !hasScore && (!data?.IsLocked || isNotFullyPicked(row.original.picksByUserId))) {
                     addedStyle = { filter: 'blur(4px)' };
                     pickedTeamName = 'Bananza!';
                 }
@@ -497,13 +512,23 @@ export default function Home() {
         }));
 
         return [...base, ...userCols];
-    }, [data, teamById, teamNameById, userPropsByUserId]);
+    }, [data, users, isNotFullyPicked, teamById, teamNameById, userPropsByUserId]);
 
     const table = useReactTable({
         data: rows,
         columns,
         getCoreRowModel: getCoreRowModel()
     });
+
+    const [firstPlace, rest] = useMemo(() => {
+        let fp = [leaderboard.ranked[0]];
+        let _r = [...leaderboard.ranked.slice(1)];
+        while (_r.length && _r[0].score === fp[0].score) {
+            fp.push(_r[0]);
+            _r = _r.slice(1);
+        }
+        return [fp, _r];
+    }, [leaderboard.ranked]);
 
     if (loading) return <MainLoading />;
 
@@ -513,11 +538,8 @@ export default function Home() {
 
     const showLeaderboardCard = leaderboard.gamesCompleted > 0 && leaderboard.ranked.length > 0;
 
-    const firstPlace = leaderboard.ranked[0];
-    const rest = leaderboard.ranked.slice(1);
-
     return (
-        <div className={styles.wrapper}>
+        <>
             {showLeaderboardCard ? (
                 <div className={styles.leaderCard}>
                     <div className={styles.leaderHeader}>
@@ -531,44 +553,47 @@ export default function Home() {
                     <div className={styles.leaderBody}>
                         {/* Always show 1st place */}
                         {firstPlace ? (
-                            <div className={styles.leaderRow}>
-                                <div className={styles.leaderRank}>{ordinal(firstPlace.rank)}</div>
+                            firstPlace.map((fp, i) => (
+                                <div className={styles.leaderRow} key={`leaderboard-fp-${i}`}>
+                                    <div className={styles.leaderRank}>{ordinal(fp.rank)}</div>
 
-                                <div className={styles.leaderMain}>
-                                    <div className={styles.leaderAvatars}>
-                                        {(() => {
-                                            const image = userPropsByUserId.get(firstPlace.id)?.image ?? null;
-                                            
-                                            return image ? (
-                                                <img
-                                                    className={styles.leaderAvatar}
-                                                    src={image}
-                                                    alt={`${firstPlace.name} avatar`}
-                                                    loading="lazy"
-                                                />
-                                            ) : (
-                                                <div className={styles.leaderAvatarFallback} />
-                                            );
-                                        })()}
+                                    <div className={styles.leaderMain}>
+                                        <div className={styles.leaderAvatars}>
+                                            {(() => {
+                                                const image = userPropsByUserId.get(fp.id)?.image ?? null;
+
+                                                return image ? (
+                                                    <img
+                                                        className={styles.leaderAvatar}
+                                                        src={image}
+                                                        alt={`${fp.name} avatar`}
+                                                        loading="lazy"
+                                                    />
+                                                ) : (
+                                                    <div className={styles.leaderAvatarFallback} />
+                                                );
+                                            })()}
+                                        </div>
+
+                                        <div className={styles.leaderNames}>
+                                            {(() => {
+                                                const color = userPropsByUserId.get(fp.id)?.color ?? "rgba(0, 255, 255, .2)";
+                                                const addedStyle = ({
+                                                    '--accentColor': color ?? '#ccc',
+                                                    color: color !== 'rgba(0, 255, 255, .2)' && shouldUseDarkText(color) ? '#111827' : "#e5e7eb"
+                                                } as React.CSSProperties);
+                                                return <span className={styles.leaderChip} style={addedStyle}>{fp.name}</span>
+                                            })()}
+                                        </div>
                                     </div>
 
-                                    <div className={styles.leaderNames}>
-                                        {(() => {
-                                            const color = userPropsByUserId.get(firstPlace.id)?.color ?? "rgba(0, 255, 255, .2)";
-                                            const addedStyle = ({
-                                                '--accentColor': color ?? '#ccc',
-                                                color: color !== 'rgba(0, 255, 255, .2)' && shouldUseDarkText(color) ? '#111827' : "#e5e7eb"
-                                            } as React.CSSProperties);
-                                            return <span className={styles.leaderChip} style={addedStyle}>{firstPlace.name}</span>
-                                        })() }
+                                    <div className={styles.leaderPoints}>
+                                        <span className={styles.leaderScoreLabel}>Points</span>
+                                        <span className={styles.leaderScoreValue}>{fp.score}</span>
                                     </div>
                                 </div>
+                            ))
 
-                                <div className={styles.leaderPoints}>
-                                    <span className={styles.leaderScoreLabel}>Points</span>
-                                    <span className={styles.leaderScoreValue}>{firstPlace.score}</span>
-                                </div>
-                            </div>
                         ) : null}
 
                         {/* Collapsible remainder */}
@@ -632,7 +657,7 @@ export default function Home() {
                     </div>
                 </div>
             ) : null}
-
+        <div className={styles.wrapper}>
             <div className={styles.tableScroller}>
                 <table className={styles.table}>
                     <thead>
@@ -683,6 +708,7 @@ export default function Home() {
                     </tbody>
                 </table>
             </div>
-        </div>
+            </div>
+        </>
     );
 }

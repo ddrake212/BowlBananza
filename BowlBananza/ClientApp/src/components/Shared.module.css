@@ -9,7 +9,7 @@
 .background {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 0;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -25,6 +25,10 @@
 
 .home, .login, .register, .changepw, .forgotpw {
     background-image: url("../Images/homeBG.png");
+}
+
+.homeContainer {
+    overflow: auto;
 }
 
 .commish {
@@ -54,6 +58,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
 .panelGlowSVG {
@@ -68,7 +73,7 @@
 .panelGlowSVG line {
     animation: glowPulse 3.5s ease-in-out infinite;
     stroke: var(--glow-color);
-    transition: stroke 0.25s ease, filter 0.25s ease;
+    transition: stroke 0.5s ease, filter 0.5s ease;
     /* Use CSS var in the filter */
     filter: drop-shadow(0 0 8px var(--glow-color)) drop-shadow(0 0 10px var(--glow-color));
 }
@@ -78,7 +83,7 @@
     animation: glowPulse 3.5s ease-in-out infinite;
     stroke: var(--glow-color);
     fill: var(--glow-color);
-    transition: stroke 0.25s ease, filter 0.25s ease, fill 0.25s ease;
+    transition: stroke 0.5s ease, filter 0.5s ease, fill 0.5s ease;
     filter: drop-shadow(0 0 8px var(--glow-color)) drop-shadow(0 0 10px var(--glow-color));
 }
 
@@ -87,7 +92,7 @@
     animation: glowPulse 3.5s ease-in-out infinite;
     stroke: var(--glow-color);
     fill: var(--glow-color);
-    transition: stroke 0.25s ease, filter 0.25s ease, fill 0.25s ease;
+    transition: stroke 0.5s ease, filter 0.5s ease, fill 0.5s ease;
     filter: drop-shadow(0 0 8px var(--glow-color)) drop-shadow(0 0 10px var(--glow-color));
 }
 

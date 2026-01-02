@@ -19,13 +19,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace BowlBananza.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class HomeController : Controller
     {
         private readonly CollegeFootballDataTestHelper cfbClient;
@@ -38,11 +39,37 @@ namespace BowlBananza.Controllers
             cfbClient = new CollegeFootballDataTestHelper(configuration);
         }
 
+        private int LeagueId()
+        {
+            var leagueId = -1;
+            int.TryParse(User.FindFirstValue("LeagueId"), out leagueId);
+            return leagueId;
+        }
+
+        public bool NotAuth()
+        {
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var username = User.FindFirstValue("Email");
+
+            if (userId == -1 || string.IsNullOrEmpty(username))
+            {
+                return true;
+            }
+            return false;
+        }
+
         [HttpGet("userprops")]
         public async Task<ActionResult<List<UserPropsDto>>> UserProps()
         {
+            if (NotAuth())
+            {
+                return Unauthorized();
+            }
+            var leagueId = LeagueId();
             var userProps = await db.UserPreferences
                 .AsNoTracking()
+                .Where(x => x.LeagueId == leagueId)
                 .Select(p => new UserPropsDto
                 {
                     UserId = p.UserId,
@@ -59,18 +86,25 @@ namespace BowlBananza.Controllers
         [HttpGet("getData")]
         public async Task<ActionResult<HomeData>> GetData()
         {
+            if (NotAuth())
+            {
+                return Unauthorized();
+            }
             var year = SeasonHelper.GetCurrentSeasonYear();
             var games = cfbClient.GetGamesAsync(year, SeasonType.Postseason);
-            var users = db.BBUsers.Where(u => u.Inactive != true).ToList();
-            var userSelections = db.GameSelections.Where(x => x.Year == year).ToList();
+            var leagueId = LeagueId();
+            var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == leagueId && x.Year == year).Select(x => x.UserId).ToHashSet();
+            var users = db.BBUsers.Where(u => LeagueUsers.Contains(u.Id) && u.Inactive != true).ToList();
+            var userSelections = db.GameSelections.Where(x => x.Year == year && x.LeagueId == leagueId).ToList();
             var teams = cfbClient.GetTeamsAsync(year);
             var locked = await db.BowlData.FirstOrDefaultAsync(u =>
                 u.IsLocked == true
                 && u.Year == year
+                && u.LeagueId == leagueId
             );
             await Task.WhenAll(games, teams);
 
-            var BowlData = db.BowlData.FirstOrDefault(x => x.Year == year);
+            var BowlData = db.BowlData.FirstOrDefault(x => x.Year == year && x.LeagueId == leagueId);
 
             var data = new HomeData();
 
@@ -83,7 +117,8 @@ namespace BowlBananza.Controllers
                 .OrderBy(g => g.StartDate)
                 .ToList();
 
-            var UserId = HttpContext.Session.GetInt32("UserId").GetValueOrDefault(1);
+            int UserId = 1;
+            int.TryParse(User.FindFirstValue("UserId"), out UserId);
             data.Users = users
                 .Select(u => new Models.User
                 {

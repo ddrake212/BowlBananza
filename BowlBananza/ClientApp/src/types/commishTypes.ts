@@ -6,4 +6,5 @@ export interface CommishData {
     CanLoadTieBreak: boolean;
     CanUnlock: boolean;
     CanForceUpdate: boolean;
+    CanNudgeUsers: boolean;
 }

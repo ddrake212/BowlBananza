@@ -7,13 +7,15 @@
 
 .leaderCard {
     border-radius: 14px;
-    margin-bottom: 14px;
+    margin-top: 14px;
     padding: 14px 16px;
     background: rgba(10, 15, 23, 0.55);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.10);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(0, 255, 255, 0.06);
+    position: sticky;
+    left: 0;
 }
 
 .leaderHeader {
@@ -154,12 +156,17 @@
     font-weight: 900;
 }
 
+@media (max-width: 350px) {
+    .leaderScoreLabel {
+        display: none;
+    }
+}
+
 @media (max-width: 560px) {
     .leaderRow {
-        grid-template-columns: 64px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
         grid-template-areas:
-            "rank main"
-            "rank points";
+            "rank main points";
         align-items: start;
         row-gap: 10px;
     }
@@ -172,13 +179,15 @@
 
     .leaderMain {
         grid-area: main;
-        justify-content: end
+        justify-content: end;
+        align-self: center;
     }
 
     .leaderPoints {
         grid-area: points;
         justify-self: end;
         width: fit-content;
+        align-self: center;
     }
 
     .leaderAvatar,
@@ -244,7 +253,6 @@
 
 .tableScroller {
     width: 100%;
-    overflow: auto;
     border-radius: 14px;
 }
 

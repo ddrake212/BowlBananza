@@ -25,5 +25,10 @@ namespace BowlBananza.Helpers
         {
             return TimeZoneInfo.ConvertTime(date.ToUniversalTime(), Eastern);
         }
+
+        public static DateTime GetRelativeTime(DateTime date)
+        {
+            return TimeZoneInfo.ConvertTime(date, Eastern);
+        }
     }
 }

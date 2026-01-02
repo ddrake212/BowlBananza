@@ -16,5 +16,8 @@ namespace BowlBananza.Data
         public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
         public DbSet<History> History => Set<History>();
         public DbSet<ForgotPW> ForgotPW => Set<ForgotPW>();
+        public DbSet<NotificationToken> NotificationTokens => Set<NotificationToken>();
+        public DbSet<LeagueUser> LeagueUsers => Set<LeagueUser>();
+        public DbSet<League> Leagues => Set<League>();
     }
 }

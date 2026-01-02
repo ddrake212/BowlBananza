@@ -5,6 +5,7 @@ using CollegeFootballData.Models;
 using Mailjet.Client.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -170,9 +171,10 @@ namespace BowlBananza.Helpers
             }
         }
 
-        public static async Task SendNewGamesEmail(AppDbContext db, int gameCount)
+        public static async Task SendNewGamesEmail(AppDbContext db, int gameCount, int LeagueId)
         {
-            var users = db.BBUsers.Where(u => u.Inactive != true).ToList();
+            var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == LeagueId).Select(x => x.UserId).ToHashSet();
+            var users = db.BBUsers.Where(u => LeagueUsers.Contains(u.Id) && u.Inactive != true).ToList();
             foreach(var user in users)
             {
                 var html = @"
@@ -332,15 +334,15 @@ namespace BowlBananza.Helpers
             }
         }
 
-        public static async Task SetScores(List<Game> games, int year, AppDbContext db)
+        public static async Task SetScores(List<Game> games, int year, AppDbContext db, int LeagueId)
         {
-            var current = db.History.Any(h => h.Year == year);
+            var current = db.History.Any(h => h.Year == year && h.LeagueId == LeagueId);
             if (current)
             {
                 return;
             }
 
-            var pointsByUserId = await CalculateScores(games, year, db);
+            var pointsByUserId = await CalculateScores(games, year, db, LeagueId);
 
             if (pointsByUserId == null)
             {
@@ -364,14 +366,15 @@ namespace BowlBananza.Helpers
                     UserId = pBU.id,
                     Year = year,
                     Points = pBU.points,
-                    Rank = pBU.rank
+                    Rank = pBU.rank,
+                    LeagueId = LeagueId
                 };
                 db.History.Add(historyEntry);
             }
             await db.SaveChangesAsync();
         }
 
-        public static async Task<Dictionary<int, int>?> CalculateScores(List<Game> games, int year, AppDbContext db)
+        public static async Task<Dictionary<int, int>?> CalculateScores(List<Game> games, int year, AppDbContext db, int LeagueId)
         {
             if (games == null) throw new ArgumentNullException(nameof(games));
             if (db == null) throw new ArgumentNullException(nameof(db));
@@ -409,7 +412,7 @@ namespace BowlBananza.Helpers
             // Pull selections for this year + relevant games
             var selections = await db.GameSelections
                 .AsNoTracking()
-                .Where(s => s.Year == year && gameIds.Contains(s.GameId))
+                .Where(s => s.Year == year && s.LeagueId == LeagueId && gameIds.Contains(s.GameId))
                 .Select(s => new { s.User, s.GameId, s.TeamId })
                 .ToListAsync();
 
@@ -434,11 +437,11 @@ namespace BowlBananza.Helpers
             return pointsByUserId;
         }
 
-        public static async Task CalculateTieBreaker(List<Game> games, int year, AppDbContext db)
+        public static async Task CalculateTieBreaker(List<Game> games, int year, AppDbContext db, int LeagueId)
         {
-            var pointsByUserId = await CalculateScores(games, year, db);
+            var pointsByUserId = await CalculateScores(games, year, db, LeagueId);
 
-            if (pointsByUserId == null)
+            if (pointsByUserId == null || db.BowlData.Any(b => b.Year == year && b.TieBreakerDate != null && b.LeagueId == LeagueId))
             {
                 return;
             }
@@ -454,7 +457,7 @@ namespace BowlBananza.Helpers
 
             if (isTieForLead)
             {
-                var bowlData = db.BowlData.FirstOrDefault(x => x.Year == year);
+                var bowlData = db.BowlData.FirstOrDefault(x => x.Year == year && x.LeagueId == LeagueId);
 
                 if (bowlData != null)
                 {
@@ -465,14 +468,19 @@ namespace BowlBananza.Helpers
 
 
                 var idHash = tiedLeaderUserIds.ToHashSet();
-                var userToSendTo = await db.BBUsers.Where(u => idHash.Contains(u.Id) && u.Inactive != true).ToListAsync();
+                var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == LeagueId && x.Year == year).Select(x => x.UserId).ToHashSet();
+                var userToSendTo = await db.BBUsers.Where(u => LeagueUsers.Contains(u.Id) && idHash.Contains(u.Id) && u.Inactive != true).ToListAsync();
                 SendTieBreakerEmail(userToSendTo);
             }
         }
 
 
-        public static async Task<bool> SyncData(IConfiguration config, AppDbContext db)
+        public static async Task<bool> SyncData(IConfiguration config, AppDbContext db, ILogger<EasternDynamicScheduledWorker> _logger, List<int> LeagueIds)
         {
+            _logger.LogInformation(
+                        "Data synced at {currentTime} (UTC).",
+                        DateTime.UtcNow
+                    );
             var cfbTestClient = new CollegeFootballDataTestHelper(config);
             var cfbClient = new CollegeFootballDataHelper(config);
 
@@ -482,22 +490,31 @@ namespace BowlBananza.Helpers
 
             await Task.WhenAll(gamesTask, currentGamesTask);
 
-            var bowlData = db.BowlData.FirstOrDefault(b => b.Year == year);
-
             var games = gamesTask.Result;
             var currentGames = currentGamesTask.Result;
 
             var gamesRemaining = games.Where(g => g.StartDate > DateTime.UtcNow).ToList();
 
-            if (gamesRemaining.Count == 1 && gamesRemaining.Any(g => g.Notes.IndexOf("National Championship") > -1))
+            foreach (int LeagueId in LeagueIds)
             {
-                await CalculateTieBreaker(games, year, db);
-            } else if (gamesRemaining.Count == 0 && games.Any(g => g.Notes.IndexOf("National Championship") > -1))
-            {
-                await SetScores(games, year, db);
-            } else if (bowlData != null && games.Count > currentGames.Count)
-            {
-                await SendNewGamesEmail(db, games.Count - currentGames.Count);
+
+                var bowlData = db.BowlData.FirstOrDefault(b => b.Year == year && b.LeagueId == LeagueId);
+
+                if (gamesRemaining.Count == 1 && gamesRemaining.Any(g => g.Notes.IndexOf("National Championship") > -1))
+                {
+                    _logger.LogInformation("Calculating Tie Breaker");
+                    await CalculateTieBreaker(games, year, db, LeagueId);
+                }
+                else if (gamesRemaining.Count == 0 && games.Any(g => g.Notes.IndexOf("National Championship") > -1))
+                {
+                    _logger.LogInformation("Set Scores");
+                    await SetScores(games, year, db, LeagueId);
+                }
+                else if (bowlData != null && games.Count > currentGames.Count)
+                {
+                    _logger.LogInformation("Send new games email");
+                    await SendNewGamesEmail(db, games.Count - currentGames.Count, LeagueId);
+                }
             }
 
             JsonFileWriter.WriteToJsonFile(games, "TestData/sampleGameData.json");
@@ -574,6 +591,10 @@ namespace BowlBananza.Helpers
             JsonFileWriter.WriteToJsonFile(metricData, "TestData/sampleMetricData.json");
             JsonFileWriter.WriteToJsonFile(matchupData, "TestData/sampleMatchupData.json");
 
+            _logger.LogInformation(
+                        "Data sync completed at {currentTime} (UTC).",
+                        DateTime.UtcNow
+                    );
             return true;
         }
 

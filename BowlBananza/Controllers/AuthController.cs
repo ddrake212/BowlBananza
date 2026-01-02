@@ -2,12 +2,16 @@
 using BowlBananza.Helpers;
 using BowlBananza.Models;
 using BowlBananza.Services;
+using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Org.BouncyCastle.Crypto;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BowlBananza.Controllers
@@ -217,6 +221,68 @@ namespace BowlBananza.Controllers
             });
         }
 
+        private async Task SetCookies(BowlBananza.Models.User user)
+        {
+            var leagues = await _authService.GetLeagues(user.Id);
+            var league = leagues.FirstOrDefault(-1);
+            var isSubmitted = await _authService.IsUserSubmitted(user.Id, league);
+            var bowlData = await _authService.GetBowlData(league);
+            var permissionRequired = await _authService.GetNotificationPermissionRequired(user.Id);
+
+
+            var isLocked = bowlData != null ? bowlData.IsLocked.GetValueOrDefault(false) : false;
+
+            var claims = new List<Claim>
+            {
+                new Claim("UserId", user.Id.ToString()),
+                new Claim("Email", user.Email),
+                new Claim("isCom", user.isCom.HasValue && user.isCom.Value ? "true" : "false"),
+                new Claim("isSubmitted", isSubmitted ? "true" : "false"),
+                new Claim("isLocked", isLocked ? "true" : "false"),
+                new Claim("isBowlActive", bowlData != null ? "true" : "false"),
+                new Claim("isInactive", user.Inactive.GetValueOrDefault(false) ? "true" : "false"),
+                new Claim("LeagueId", league.ToString()),
+                new Claim("permissionRequired", permissionRequired ? "true" : "false")
+            };
+
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            var principal = new ClaimsPrincipal(identity);
+
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true, // survives browser close
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14000),
+                AllowRefresh = true,
+                IssuedUtc = DateTimeOffset.UtcNow,
+                RedirectUri = "/"
+            };
+
+            await HttpContext.SignInAsync(
+                "Cookies",
+                principal,
+                authProperties
+            );
+
+        }
+
+        [HttpGet("applogin")]
+        public async Task<IActionResult> AppLogin(string userName)
+        {
+            var user = await _authService.ValidateAppLoginAsync(userName);
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            await SetCookies(user);
+
+            return Ok(new
+            {
+                user.Id,
+                user.Username
+            });
+        }
+
         // POST: api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -232,18 +298,8 @@ namespace BowlBananza.Controllers
                 return Unauthorized("Invalid username or password.");
             }
 
-            var isSubmitted = await _authService.IsUserSubmitted(user.Id);
-            var bowlData = await _authService.GetBowlData();
-            var isLocked = bowlData != null ? bowlData.IsLocked.GetValueOrDefault(false) : false;
+            await SetCookies(user);
 
-            // Store minimal info in session
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("Email", user.Email);
-            HttpContext.Session.SetString("isCom", user.isCom.HasValue && user.isCom.Value ? "true" : "false");
-            HttpContext.Session.SetString("isSubmitted", isSubmitted ? "true" : "false");
-            HttpContext.Session.SetString("isLocked", isLocked ? "true" : "false");
-            HttpContext.Session.SetString("isBowlActive", bowlData != null ? "true" : "false");
-            HttpContext.Session.SetString("isInactive", user.Inactive.GetValueOrDefault(false) ? "true" : "false");
             return Ok(new
             {
                 user.Id,
@@ -253,9 +309,9 @@ namespace BowlBananza.Controllers
 
         // POST: api/auth/logout
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync("Cookies");
             return Ok("Logged out.");
         }
 
@@ -263,34 +319,66 @@ namespace BowlBananza.Controllers
         [HttpGet("me")]
         public IActionResult Me()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            var username = HttpContext.Session.GetString("Email");
-            var isCommish = HttpContext.Session.GetString("isCom");
-            var isSubmitted = HttpContext.Session.GetString("isSubmitted");
-            var isLocked = HttpContext.Session.GetString("isLocked");
-            var isBowlActive = HttpContext.Session.GetString("isBowlActive");
-            var isInactive = HttpContext.Session.GetString("isInactive");
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var username = User.FindFirstValue("Email");
+            var isCommish = User.FindFirstValue("isCom");
+            var isSubmitted = User.FindFirstValue("isSubmitted");
+            var isLocked = User.FindFirstValue("isLocked");
+            var isBowlActive = User.FindFirstValue("isBowlActive");
+            var isInactive = User.FindFirstValue("isInactive");
+            var permissionRequired = User.FindFirstValue("permissionRequired");
 
-            if (userId == null || string.IsNullOrEmpty(username))
+            if (userId == -1 || string.IsNullOrEmpty(username))
             {
                 return Unauthorized();
             }
 
             return Ok(new
             {
-                UserId = userId.Value,
+                UserId = userId,
                 Username = username,
                 IsCommish = isCommish == "true",
                 isSubmitted = isSubmitted == "true",
                 isLocked = isLocked == "true",
                 isInactive = isInactive == "true",
-                isBowlActive = isBowlActive == "true"
+                isBowlActive = isBowlActive == "true",
+                permissionRequired = permissionRequired == "true"
             });
+        }
+
+        [HttpPost("logNotificationKey")]
+        public async Task<IActionResult> LogNotificationKey(string key, string platform)
+        {
+            int userId = -1;
+            int.TryParse(User.FindFirstValue("UserId"), out userId);
+            var notificationToken = db.NotificationTokens.FirstOrDefault(n => n.UserId == userId && n.Platform == platform);
+            if (notificationToken == null)
+            {
+                notificationToken = new NotificationToken()
+                {
+                    UserId = userId,
+                    Token = key,
+                    Platform = platform,
+                    CreatedUtc = DateTime.UtcNow,
+                    IsActive = true
+                };
+                db.NotificationTokens.Add(notificationToken);
+            } else
+            {
+                notificationToken.Token = key;
+                notificationToken.Platform = platform;
+                notificationToken.LastSeenUtc = DateTime.UtcNow;
+                notificationToken.IsActive = true;
+                db.NotificationTokens.Update(notificationToken);
+            }
+            db.SaveChanges();
+            return Ok();
         }
 
         // POST: api/auth/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User request)
+        public async Task<IActionResult> Register([FromBody] BowlBananza.Models.User request)
         {
             if ((string.IsNullOrWhiteSpace(request.Username) && string.IsNullOrWhiteSpace(request.Email)) || string.IsNullOrWhiteSpace(request.Password))
             {
@@ -332,18 +420,7 @@ namespace BowlBananza.Controllers
                 return NotFound("User does not exist.");
             }
 
-            var isSubmitted = await _authService.IsUserSubmitted(user.Id);
-            var bowlData = await _authService.GetBowlData();
-            var isLocked = bowlData != null ? bowlData.IsLocked.GetValueOrDefault(false) : false;
-
-            // Store minimal identity in session if login succeeded
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("Email", user.Email);
-            HttpContext.Session.SetString("isCom", user.isCom.HasValue && user.isCom.Value ? "true" : "false");
-            HttpContext.Session.SetString("isSubmitted", isSubmitted ? "true" : "false");
-            HttpContext.Session.SetString("isLocked", isLocked ? "true" : "false");
-            HttpContext.Session.SetString("isBowlActive", bowlData != null ? "true" : "false");
-            HttpContext.Session.SetString("isInactive", user.Inactive.GetValueOrDefault(false) ? "true" : "false");
+            await SetCookies(user);
 
             return Ok(new
             {

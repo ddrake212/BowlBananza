@@ -47,68 +47,93 @@ const Commish = () => {
 
     useEffect(() => {
         setLoading(true);
-        fetch('/commish/getData')
-            .then(resp => resp.json())
+        fetch('/api/commish/getData')
+            .then(resp => {
+                if (resp.status === 401) {
+                    navigate('/login', { state: { rtnPage: '/commish' } });
+                } else {
+                    return resp.json();
+                }
+            })
             .then(result => {
                 setCommishData(result);
                 setSelectedCommish(result.CurrentCommish);
             })
             .catch(console.error)
             .finally(() => setLoading(false));
-    }, []);
+    }, [navigate]);
 
     const lockData = useCallback(() => {
         setLoading(true);
-        fetch('/commish/lockData').then(() => setCommishData(data => {
-            return {
-                ...data,
-                CanLockDown: false,
-                CanUnlock: true
-            } as CommishData;
-        })).finally(() => setLoading(false));
-    }, []);
+        fetch('/api/commish/lockData').then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/commish' } });
+            } else {
+                setCommishData(data => {
+                    return {
+                        ...data,
+                        CanLockDown: false,
+                        CanUnlock: true
+                    } as CommishData;
+                });
+            }
+        }).finally(() => setLoading(false));
+    }, [navigate]);
 
     const unlock = useCallback(() => {
         setLoading(true);
-        fetch('/commish/unlock').then(() => setCommishData(data => {
-            return {
-                ...data,
-                CanLockDown: true,
-                CanUnlock: false
-            } as CommishData;
-        })).finally(() => setLoading(false));
-    }, []);
+        fetch('/api/commish/unlock').then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/commish' } });
+            } else {
+                setCommishData(data => {
+                    return {
+                        ...data,
+                        CanLockDown: true,
+                        CanUnlock: false
+                    } as CommishData;
+                });
+            }
+        }).finally(() => setLoading(false));
+    }, [navigate]);
 
     const syncData = useCallback(() => {
         setLoading(true)
-        fetch('/commish/dataSync').finally(() => setLoading(false));
-    }, []);
+        fetch('/api/commish/dataSync').then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/commish' } });
+            }
+        }).finally(() => setLoading(false));
+    }, [navigate]);
 
     const updateData = useCallback(() => {
         setLoading(true)
-        fetch('/commish/forceSync').finally(() => setLoading(false));
-    }, []);
+        fetch('/api/commish/forceSync').then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/commish' } });
+            }
+        }).finally(() => setLoading(false));
+    }, [navigate]);
 
     const userChanged = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCommish(parseInt(e.target.value));
     }, []);
 
-    const loadTieBreak = useCallback(() => {
-        setLoading(true);
-        fetch('/commish/loadTieBreak').then(() => setCommishData(data => {
-            return {
-                ...data,
-                CanLoadTieBreak: false
-            } as CommishData;
-        })).finally(() => setLoading(false));
-    }, []);
-
     const saveCommish = useCallback(() => {
         setLoading(true);
-        fetch(`/commish/updateCommish?userId=${selectedCommish}`)
+        fetch(`/api/commish/updateCommish?userId=${selectedCommish}`)
             .then(() => navigate('/'))
             .finally(() => setLoading(false));
     }, [navigate, selectedCommish]);
+
+    const nudgeUsers = useCallback(() => {
+        setLoading(true)
+        fetch('/api/commish/nudgeUsers').then(resp => {
+            if (resp.status === 401) {
+                navigate('/login', { state: { rtnPage: '/commish' } });
+            }
+        }).finally(() => setLoading(false));
+    }, [navigate]);
 
     if (loading || !commishData) {
         return <MainLoading />;
@@ -132,6 +157,10 @@ const Commish = () => {
                 {
                     commishData.CanUnlock &&
                     <button className={styles.primaryBtn} onClick={unlock}><span>Unlock</span></button>
+                }
+                {
+                    commishData.CanNudgeUsers &&
+                    <button className={styles.primaryBtn} onClick={nudgeUsers}><span>Nudge People</span></button>
                 }
                 {
                     commishData.Users.length &&

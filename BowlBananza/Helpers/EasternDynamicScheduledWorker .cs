@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -77,8 +78,12 @@ namespace BowlBananza.Helpers
                     {
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                        // If you still need this helper, pass the scoped db
-                        await DataSyncHelper.SyncData(_config, db);
+                        var leagues = db.Leagues.ToList();
+                        foreach (var league in leagues)
+                        {
+                            // If you still need this helper, pass the scoped db
+                            await DataSyncHelper.SyncData(_config, db, _logger, league.Id);
+                        }
 
                         var sync = scope.ServiceProvider.GetRequiredService<ISyncDataService>();
                         await sync.SyncDataAsync(stoppingToken);

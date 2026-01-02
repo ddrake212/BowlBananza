@@ -382,6 +382,14 @@
     transition: width .2s ease;
 }
 
+.lockedIcon {
+    position: absolute;
+    top: 0;
+    right: 0.75rem;
+    height: 25px;
+    aspect-ratio: 1 / 1;
+}
+
 .saveBtn > *, .secondaryBtn > * {
     position: relative;
     z-index: 2;
@@ -440,6 +448,10 @@
     background: linear-gradient(90deg, transparent, #ffffff44, transparent);
     width: 100%;
     padding: .5rem;
+}
+
+.darkGameNameHolder {
+    background: linear-gradient(90deg, transparent, #00000044, transparent) !important;
 }
 
 .gameNameHolder * {
