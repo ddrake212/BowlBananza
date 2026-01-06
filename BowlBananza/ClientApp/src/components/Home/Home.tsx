@@ -1,9 +1,8 @@
-﻿import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { ColorContext } from '../../contexts/ColorContext';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { HomeData } from '../../types/homeTypes';
 import { GameInfo, TeamInfo } from '../../types/gameTypes';
 import MainLoading from '../MainLoading';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import {
     ColumnDef,
@@ -15,10 +14,17 @@ import {
 import styles from './Styles/Home.module.css';
 import { getBestLogo } from '../../utils/logoUtils';
 import { getTeamColor, invertHexColor, shouldUseDarkText } from '../../utils/colorUtils';
+import LeaderBoard from './LeaderBoard';
+import { useUpdateColor } from '../../hooks/useUpdateColor';
 
 type RowModel = {
     game: GameInfo;
     picksByUserId: Record<number, number | undefined>;
+
+    // ✅ precomputed once per row
+    hasScore: boolean;
+    winnerTeamId: number | null;
+    isFullyPicked: boolean;
 };
 
 type ColumnMeta = {
@@ -100,42 +106,6 @@ function isCompletedWithWinner(g: GameInfo): { winnerTeamId: number } | null {
     return { winnerTeamId };
 }
 
-// Standard competition ranking: 1,2,2,4
-function buildRanks<T extends { score: number }>(
-    items: T[]
-): Array<T & { rank: number; isTied: boolean }> {
-    const result: Array<T & { rank: number; isTied: boolean }> = [];
-    let lastScore: number | null = null;
-    let lastRank = 0;
-
-    const counts = new Map<number, number>();
-    for (const it of items) counts.set(it.score, (counts.get(it.score) ?? 0) + 1);
-
-    for (let i = 0; i < items.length; i++) {
-        const it = items[i];
-        const isNewScore = lastScore == null || it.score !== lastScore;
-
-        if (isNewScore) {
-            lastRank = i + 1;
-            lastScore = it.score;
-        }
-
-        result.push({
-            ...it,
-            rank: lastRank,
-            isTied: (counts.get(it.score) ?? 0) > 1
-        });
-    }
-
-    return result;
-}
-
-function ordinal(n: number): string {
-    const s = ['th', 'st', 'nd', 'rd'];
-    const v = n % 100;
-    return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
-}
-
 async function fetchJson<T>(url: string, signal: AbortSignal, onUnauth: () => void): Promise<T> {
     const res = await fetch(url, { signal });
     if (!res.ok) {
@@ -150,19 +120,38 @@ async function fetchJson<T>(url: string, signal: AbortSignal, onUnauth: () => vo
     return res.json() as Promise<T>;
 }
 
+function getSearchParamsAsObject(queryString: string): { [key: string]: string } {
+    // Create a URLSearchParams object from the query string
+    const searchParams = new URLSearchParams(queryString);
+
+    // Convert the URLSearchParams iterator to a plain object
+    const paramsObject: { [key: string]: string } = Object.fromEntries(searchParams.entries());
+
+    return paramsObject;
+}
+
 export default function Home() {
-    const { setColor } = React.useContext(ColorContext) ?? { setColor: () => { } };
+    const updateColor = useUpdateColor();
 
     const [data, setData] = useState<HomeData | undefined>();
     const [userProps, setUserProps] = useState<UserProp[] | undefined>(undefined);
 
+    const navigate = useNavigate();
+
     // Only block initial render on main data (fast)
     const [loading, setLoading] = useState(true);
 
-    const [leaderboardExpanded, setLeaderboardExpanded] = useState(false);
+    const location = useLocation();
+    const navigateTo = getSearchParamsAsObject(location.search).nt;
 
     useEffect(() => {
-        setColor('#ffffff');
+        if (navigateTo) {
+            navigate(`/${navigateTo}`);
+        }
+    }, [navigateTo, navigate]);
+
+    useEffect(() => {
+        updateColor('#ffffff');
 
         const glowColors = [
             '#00FFFF',
@@ -181,13 +170,11 @@ export default function Home() {
         const interval = setInterval(() => {
             const c = glowColors.shift();
             glowColors.push(c ?? '');
-            setColor(c ?? '');
+            updateColor(c ?? '');
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [setColor]);
-
-    const navigate = useNavigate();
+    }, [updateColor]);
 
     // ✅ Parallel fetch:
     // - /home/getData (no UserProperties)
@@ -199,7 +186,7 @@ export default function Home() {
 
         const mainPromise = fetchJson<HomeData>('/api/home/getData', controller.signal, () => navigate('/login'))
             .then(d => setData(d))
-            .catch(() => {})
+            .catch(() => { })
             .finally(() => setLoading(false)); // unblock UI as soon as main data is ready
 
         const propsPromise = fetchJson<UserProp[]>('/api/home/userprops', controller.signal, () => navigate('/login'))
@@ -244,6 +231,11 @@ export default function Home() {
         return map;
     }, [data]);
 
+    const users = data?.Users ?? [];
+
+    // ✅ stable userId list used for row computations (avoids per-cell reduce)
+    const userIds = useMemo(() => users.map(u => u.Id), [users]);
+
     const rows: RowModel[] = useMemo(() => {
         const games = [...(data?.Games ?? [])];
 
@@ -253,11 +245,27 @@ export default function Home() {
             return da - db;
         });
 
-        return games.map(g => ({
-            game: g,
-            picksByUserId: picksByGameId.get(g.Id ?? -1) ?? {}
-        }));
-    }, [data, picksByGameId]);
+        return games.map(g => {
+            const picks = picksByGameId.get(g.Id ?? -1) ?? {};
+
+            const hasScore = g.AwayPoints != null && g.HomePoints != null;
+            const winner = hasScore ? isCompletedWithWinner(g) : null;
+            const winnerTeamId = winner?.winnerTeamId ?? null;
+
+            // ✅ compute once per row
+            const isFullyPicked = userIds.length
+                ? userIds.every(uid => Boolean(picks[uid]))
+                : true;
+
+            return {
+                game: g,
+                picksByUserId: picks,
+                hasScore,
+                winnerTeamId,
+                isFullyPicked
+            };
+        });
+    }, [data, picksByGameId, userIds]);
 
     const getUserPickTdClass = (
         rowModel: RowModel,
@@ -268,59 +276,31 @@ export default function Home() {
         const pickedTeamId = rowModel.picksByUserId[userId];
         if (pickedTeamId == null) return !isLocked && mainUserId !== userId ? '' : styles.userCellEmpty;
 
-        const winner = isCompletedWithWinner(rowModel.game);
-        if (!winner) return styles.userCellPending;
+        if (!rowModel.winnerTeamId) return styles.userCellPending;
 
-        return pickedTeamId === winner.winnerTeamId
+        return pickedTeamId === rowModel.winnerTeamId
             ? styles.userCellCorrect
             : styles.userCellIncorrect;
     };
 
-    const leaderboard = useMemo(() => {
-        const users = data?.Users ?? [];
-        const games = data?.Games ?? [];
+    // ✅ memoize header styles once (stable object references)
+    const headerStyleByUserId = useMemo(() => {
+        const out = new Map<number, React.CSSProperties>();
 
-        const completedGameWinners = new Map<number, number>();
-        for (const g of games) {
-            if (g.Id == null) continue;
-            const winner = isCompletedWithWinner(g);
-            if (winner) completedGameWinners.set(g.Id, winner.winnerTeamId);
+        for (const u of users) {
+            const props = userPropsByUserId.get(u.Id);
+            const color = props?.color ? normalizeHexColor(props.color) : null;
+            if (!color) continue;
+
+            const useBlackText = shouldUseDarkText(color);
+            out.set(u.Id, {
+                background: color,
+                color: useBlackText ? '#000000' : '#ffffff'
+            });
         }
 
-        const gamesCompleted = completedGameWinners.size;
-
-        const scores = users.map(u => {
-            let score = 0;
-            completedGameWinners.forEach((winnerTeamId, gameId) => {
-                const pick = picksByGameId.get(gameId)?.[u.Id];
-                if (pick != null && pick === winnerTeamId) score += 1;
-            });
-
-            return {
-                id: u.Id,
-                name: getUserDisplayName(u),
-                score
-            };
-        });
-
-        scores.sort((a, b) => {
-            if (b.score !== a.score) return b.score - a.score;
-            return a.name.localeCompare(b.name);
-        });
-
-        const ranked = buildRanks(scores);
-        const topScore = ranked.length ? ranked[0].score : 0;
-
-        return { ranked, topScore, gamesCompleted };
-    }, [data, picksByGameId]);
-
-    const users = data?.Users ?? [];
-
-    const isNotFullyPicked = useCallback((rowData: Record<number, number | undefined>): boolean => {
-        return !users.reduce((t, x) => {
-            return t && Boolean(rowData[x.Id]);
-        }, true) ?? false;
-    }, [users]);
+        return out;
+    }, [users, userPropsByUserId]);
 
     const columns: ColumnDef<RowModel>[] = useMemo(() => {
         const base: ColumnDef<RowModel>[] = [
@@ -436,16 +416,15 @@ export default function Home() {
                 header: 'Score',
                 meta: {
                     tdClassName: (ctx: any) => {
-                        const g = (ctx.row.original as RowModel).game;
-                        const hasScore = g.AwayPoints != null && g.HomePoints != null;
-                        return hasScore ? styles.scoreCellFinal : styles.scoreCellPending;
+                        const rm = ctx.row.original as RowModel;
+                        return rm.hasScore ? styles.scoreCellFinal : styles.scoreCellPending;
                     }
                 } as ColumnMeta,
                 cell: ({ row }) => {
-                    const g = row.original.game;
-                    const hasScore = g.AwayPoints != null && g.HomePoints != null;
+                    const rm = row.original;
+                    const g = rm.game;
 
-                    if (!hasScore) {
+                    if (!rm.hasScore) {
                         return <div className={styles.scoreCellInner}>—</div>;
                     }
 
@@ -473,38 +452,36 @@ export default function Home() {
 
                 thClassName: styles.userHeaderTh,
 
-                thStyle: () => {
-                    const props = userPropsByUserId.get(user.Id);
-                    const color = props?.color ? normalizeHexColor(props.color) : null;
-                    if (!color) return undefined;
-
-                    const useBlackText = shouldUseDarkText(color);
-
-                    return {
-                        background: color,
-                        color: useBlackText ? '#000000' : '#ffffff'
-                    };
-                }
+                // ✅ returns stable object from memoized Map (less GC churn)
+                thStyle: () => headerStyleByUserId.get(user.Id)
             } as ColumnMeta,
 
             cell: ({ row }) => {
-                const pickedTeamId = row.original.picksByUserId[user.Id];
+                const rm = row.original;
+
+                const pickedTeamId = rm.picksByUserId[user.Id];
                 let pickedTeamName =
                     pickedTeamId != null && pickedTeamId !== -1
                         ? teamNameById.get(pickedTeamId) ?? `Team ${pickedTeamId}`
                         : '—';
 
-                let addedStyle: React.CSSProperties = {};
-                const g = row.original.game;
-                const hasScore = g.AwayPoints != null && g.HomePoints != null;
+                // ✅ use precomputed flags
+                const shouldHidePick =
+                    user.Id !== data?.UserId &&
+                    !rm.hasScore &&
+                    (!data?.IsLocked || !rm.isFullyPicked);
 
-                if (user.Id !== data?.UserId && !hasScore && (!data?.IsLocked || isNotFullyPicked(row.original.picksByUserId))) {
-                    addedStyle = { filter: 'blur(4px)' };
+                if (shouldHidePick) {
                     pickedTeamName = 'Bananza!';
                 }
 
                 return (
-                    <div className={styles.userCellContent} style={addedStyle}>
+                    <div
+                        className={[
+                            styles.userCellContent,
+                            shouldHidePick ? styles.userCellBlurred : ''
+                        ].filter(Boolean).join(' ')}
+                    >
                         {pickedTeamName}
                     </div>
                 );
@@ -512,7 +489,7 @@ export default function Home() {
         }));
 
         return [...base, ...userCols];
-    }, [data, users, isNotFullyPicked, teamById, teamNameById, userPropsByUserId]);
+    }, [data, users, teamById, teamNameById, headerStyleByUserId]);
 
     const table = useReactTable({
         data: rows,
@@ -520,194 +497,66 @@ export default function Home() {
         getCoreRowModel: getCoreRowModel()
     });
 
-    const [firstPlace, rest] = useMemo(() => {
-        let fp = [leaderboard.ranked[0]];
-        let _r = [...leaderboard.ranked.slice(1)];
-        while (_r.length && _r[0].score === fp[0].score) {
-            fp.push(_r[0]);
-            _r = _r.slice(1);
-        }
-        return [fp, _r];
-    }, [leaderboard.ranked]);
-
     if (loading) return <MainLoading />;
 
     if (!rows.length) {
         return <div className={styles.emptyState}>Bananza has not started yet</div>;
     }
 
-    const showLeaderboardCard = leaderboard.gamesCompleted > 0 && leaderboard.ranked.length > 0;
-
     return (
         <>
-            {showLeaderboardCard ? (
-                <div className={styles.leaderCard}>
-                    <div className={styles.leaderHeader}>
-                        <div className={styles.leaderTitle}>Leaderboard</div>
-                        <div className={styles.leaderMeta}>
-                            {leaderboard.gamesCompleted} completed{' '}
-                            {leaderboard.gamesCompleted === 1 ? 'game' : 'games'}
-                        </div>
-                    </div>
+            <LeaderBoard data={data} picksByGameId={picksByGameId} userPropsByUserId={userPropsByUserId} />
+            <div className={styles.wrapper}>
+                <div className={styles.tableScroller}>
+                    <table className={styles.table}>
+                        <thead>
+                            {table.getHeaderGroups().map(hg => (
+                                <tr key={hg.id}>
+                                    {hg.headers.map(h => {
+                                        const meta = h.column.columnDef.meta as ColumnMeta | undefined;
+                                        const thStyle = meta?.thStyle?.(h.getContext());
 
-                    <div className={styles.leaderBody}>
-                        {/* Always show 1st place */}
-                        {firstPlace ? (
-                            firstPlace.map((fp, i) => (
-                                <div className={styles.leaderRow} key={`leaderboard-fp-${i}`}>
-                                    <div className={styles.leaderRank}>{ordinal(fp.rank)}</div>
-
-                                    <div className={styles.leaderMain}>
-                                        <div className={styles.leaderAvatars}>
-                                            {(() => {
-                                                const image = userPropsByUserId.get(fp.id)?.image ?? null;
-
-                                                return image ? (
-                                                    <img
-                                                        className={styles.leaderAvatar}
-                                                        src={image}
-                                                        alt={`${fp.name} avatar`}
-                                                        loading="lazy"
-                                                    />
-                                                ) : (
-                                                    <div className={styles.leaderAvatarFallback} />
-                                                );
-                                            })()}
-                                        </div>
-
-                                        <div className={styles.leaderNames}>
-                                            {(() => {
-                                                const color = userPropsByUserId.get(fp.id)?.color ?? "rgba(0, 255, 255, .2)";
-                                                const addedStyle = ({
-                                                    '--accentColor': color ?? '#ccc',
-                                                    color: color !== 'rgba(0, 255, 255, .2)' && shouldUseDarkText(color) ? '#111827' : "#e5e7eb"
-                                                } as React.CSSProperties);
-                                                return <span className={styles.leaderChip} style={addedStyle}>{fp.name}</span>
-                                            })()}
-                                        </div>
-                                    </div>
-
-                                    <div className={styles.leaderPoints}>
-                                        <span className={styles.leaderScoreLabel}>Points</span>
-                                        <span className={styles.leaderScoreValue}>{fp.score}</span>
-                                    </div>
-                                </div>
-                            ))
-
-                        ) : null}
-
-                        {/* Collapsible remainder */}
-                        {rest.length ? (
-                            <>
-                                <button
-                                    type="button"
-                                    className={styles.leaderToggle}
-                                    onClick={() => setLeaderboardExpanded(v => !v)}
-                                    aria-expanded={leaderboardExpanded}
-                                >
-                                    {leaderboardExpanded ? 'Hide Losers' : 'Show Losers'}
-                                </button>
-
-                                <div
-                                    className={[
-                                        styles.leaderCollapsible,
-                                        leaderboardExpanded ? styles.leaderCollapsibleOpen : styles.leaderCollapsibleClosed
-                                    ].join(' ')}
-                                >
-                                    {rest.map(p => {
-                                        const image = userPropsByUserId.get(p.id)?.image ?? null;
-                                        const color = userPropsByUserId.get(p.id)?.color ?? "rgba(0, 255, 255, .2)";
-                                        const addedStyle = ({
-                                            '--accentColor': color ?? '#ccc',
-                                            color: color !== 'rgba(0, 255, 255, .2)' && shouldUseDarkText(color) ? '#111827' : "#e5e7eb"
-                                        } as React.CSSProperties);
                                         return (
-                                            <div key={p.id} className={styles.leaderRow}>
-                                                <div className={styles.leaderRank}>{ordinal(p.rank)}</div>
-
-                                                <div className={styles.leaderMain}>
-                                                    <div className={styles.leaderAvatars}>
-                                                        {image ? (
-                                                            <img
-                                                                className={styles.leaderAvatar}
-                                                                src={image}
-                                                                alt={`${p.name} avatar`}
-                                                                loading="lazy"
-                                                            />
-                                                        ) : (
-                                                            <div className={styles.leaderAvatarFallback} />
-                                                        )}
-                                                    </div>
-
-                                                    <div className={styles.leaderNames}>
-                                                        <span className={styles.leaderChip} style={addedStyle}>{p.name}</span>
-                                                    </div>
-                                                </div>
-
-                                                <div className={styles.leaderPoints}>
-                                                    <span className={styles.leaderScoreLabel}>Points</span>
-                                                    <span className={styles.leaderScoreValue}>{p.score}</span>
-                                                </div>
-                                            </div>
+                                            <th
+                                                key={h.id}
+                                                className={[styles.th, meta?.thClassName].filter(Boolean).join(' ')}
+                                                style={thStyle}
+                                            >
+                                                {flexRender(h.column.columnDef.header, h.getContext())}
+                                            </th>
                                         );
                                     })}
-                                </div>
-                            </>
-                        ) : null}
-                    </div>
+                                </tr>
+                            ))}
+                        </thead>
+
+                        <tbody className={styles.tbody}>
+                            {table.getRowModel().rows.map(row => (
+                                <tr key={row.id}>
+                                    {row.getVisibleCells().map(cell => {
+                                        const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
+                                        const extraTdClass = meta?.tdClassName?.(cell.getContext());
+
+                                        return (
+                                            <td
+                                                key={cell.id}
+                                                className={[
+                                                    styles.td,
+                                                    cell.column.id === 'teams' && styles.tdTeams,
+                                                    extraTdClass
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(' ')}
+                                            >
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
-            ) : null}
-        <div className={styles.wrapper}>
-            <div className={styles.tableScroller}>
-                <table className={styles.table}>
-                    <thead>
-                        {table.getHeaderGroups().map(hg => (
-                            <tr key={hg.id}>
-                                {hg.headers.map(h => {
-                                    const meta = h.column.columnDef.meta as ColumnMeta | undefined;
-                                    const thStyle = meta?.thStyle?.(h.getContext());
-
-                                    return (
-                                        <th
-                                            key={h.id}
-                                            className={[styles.th, meta?.thClassName].filter(Boolean).join(' ')}
-                                            style={thStyle}
-                                        >
-                                            {flexRender(h.column.columnDef.header, h.getContext())}
-                                        </th>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-                    </thead>
-
-                    <tbody className={styles.tbody}>
-                        {table.getRowModel().rows.map(row => (
-                            <tr key={row.id}>
-                                {row.getVisibleCells().map(cell => {
-                                    const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
-                                    const extraTdClass = meta?.tdClassName?.(cell.getContext());
-
-                                    return (
-                                        <td
-                                            key={cell.id}
-                                            className={[
-                                                styles.td,
-                                                cell.column.id === 'teams' && styles.tdTeams,
-                                                extraTdClass
-                                            ]
-                                                .filter(Boolean)
-                                                .join(' ')}
-                                        >
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </td>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
             </div>
         </>
     );

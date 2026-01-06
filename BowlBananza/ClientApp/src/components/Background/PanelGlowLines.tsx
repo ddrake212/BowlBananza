@@ -4,7 +4,6 @@ import { GlowPoint, Point } from "../../types/glowUtils";
 import styles from '../Shared.module.css';
 
 export interface PanelGlowLinesProps {
-    glowColor?: string;
     strokeWidth?: number;
     originalWidth: number;
     originalHeight: number;
@@ -17,7 +16,6 @@ export interface PanelGlowLinesProps {
 }
 
 const PanelGlowLines: React.FC<PanelGlowLinesProps> = ({
-    glowColor = "rgb(253,99,39)",
     strokeWidth = .8,
     originalWidth,
     originalHeight,
@@ -28,19 +26,17 @@ const PanelGlowLines: React.FC<PanelGlowLinesProps> = ({
 }) => {
     const lineStyle = useMemo<React.CSSProperties>(
         () => ({
-            '--glow-color': glowColor,
             strokeWidth,
         } as React.CSSProperties),
-        [glowColor, strokeWidth]
+        [strokeWidth]
     );
 
     const polygonStyle = useMemo<React.CSSProperties>(
         () => ({
-            '--glow-color': glowColor,
             strokeWidth,
             fillOpacity,
         }),
-        [glowColor, strokeWidth, fillOpacity]
+        [strokeWidth, fillOpacity]
     );
 
     const toPointsAttr = (poly: Point[]): string =>
@@ -51,7 +47,6 @@ const PanelGlowLines: React.FC<PanelGlowLinesProps> = ({
             className={styles.panelGlowSVG}
             viewBox={`0 0 ${originalWidth} ${originalHeight}`}
             preserveAspectRatio="xMidYMid slice"  // <- important
-            style={{ backgroundColor: (glowColor?.length === 9 ? 'transparent' : `${glowColor}0D`) }}
         >
             {lines.map((line, i) => (
                 <line

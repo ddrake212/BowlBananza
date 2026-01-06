@@ -46,3 +46,7 @@ html {
 .full-container {
     max-width: 100% !important;
 }
+
+.selected-nav span {
+    color: var(--orange) !important;
+}

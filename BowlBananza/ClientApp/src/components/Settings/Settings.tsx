@@ -5,7 +5,7 @@ import styles from "./Styles/Settings.module.css";
 import MainLoading from "../MainLoading";
 import { compressImageUnder2MB } from "../../utils/imageUtils";
 import { useNavigate } from "react-router";
-import { ColorContext } from "../../contexts/ColorContext";
+import { useUpdateColor } from "../../hooks/useUpdateColor";
 
 type PreferencesProps = {
     initialColor?: string;
@@ -27,10 +27,10 @@ export default function Settings({
     const navigate = useNavigate();
     const [color, setColor] = useState(initialColor);
 
-    const { setColor: setColorMain } = React.useContext(ColorContext) ?? { setColor: () => { } };
+    const updateColor = useUpdateColor();
 
     useEffect(() => {
-        setColorMain('#ffffff00');
+        updateColor('#ffffff00');
         const glowColors = [
             "#00FFFF", // Cyan
             "#008CFF", // Electric Blue
@@ -47,10 +47,10 @@ export default function Settings({
         const timeout = setInterval(() => {
             const c = glowColors.shift();
             glowColors.push(c ?? '');
-            setColorMain(c ?? '');
+            updateColor(c ?? '');
         }, 5000);
         return () => clearInterval(timeout);
-    }, [setColorMain]);
+    }, [updateColor]);
 
     // FINAL saved avatar (cropped)
     const [imageBase64, setImageBase64] = useState<string | null>(initialImageBase64 || null);

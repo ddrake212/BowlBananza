@@ -1,5 +1,4 @@
 ﻿import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { ColorContext } from '../../contexts/ColorContext';
 import GameContainer from './GameContainer';
 import { TeamInfo, GameInfo, TeamRecords, GameTeamStatsType, Matchup } from '../../types/gameTypes';
 import TeamHolder from './TeamHolder';
@@ -14,10 +13,10 @@ import { TeamMetrics }  from './TeamMetrics';
 import { MatchupDialog } from './TeamMatchup';
 import { useAuth } from '../../hooks/useAuth';
 import { getTeamColor } from '../../utils/colorUtils';
+import { useUpdateColor } from '../../hooks/useUpdateColor';
 
 const Games = () => {
-    const { setColor } = React.useContext(ColorContext) ?? { setColor: () => { } };
-
+    const updateColor = useUpdateColor();
     const navigate = useNavigate();
 
     const { isSubmitted, isLocked, isInactive, checked } = useAuth();
@@ -58,8 +57,8 @@ const Games = () => {
     const today = new Date();
 
     useEffect(() => {
-        setColor('#ffffff00');
-    }, [setColor]);
+        updateColor('#ffffff00');
+    }, [updateColor]);
 
     useEffect(() => {
         setLoading(true);
@@ -97,7 +96,7 @@ const Games = () => {
                         }
                     }
                     if (startIndex === -1) {
-                        setColor(getTeamColor(tempTeamForColor));
+                        updateColor(getTeamColor(tempTeamForColor));
                     }
                     return newArr;
                 });
@@ -108,7 +107,7 @@ const Games = () => {
             })
             .catch((e) => { })
             .finally(() => setLoading(false));
-    }, [setColor, navigate]);
+    }, [updateColor, navigate]);
 
     useEffect(() => {
         if (gameIndex > -1) {
@@ -131,7 +130,7 @@ const Games = () => {
     }, [navigate]);
 
     const onSelect = useCallback((team: TeamInfo) => {
-        setColor(getTeamColor(team));
+        updateColor(getTeamColor(team));
         setSelectedTeams(m => {
             const newMap = new Map(m);
             if (newMap.size === games.length - 1 && !newMap.has(games[gameIndex]?.Id ?? -1)) {
@@ -148,18 +147,18 @@ const Games = () => {
         })
 
         save(games[gameIndex]?.Id ?? -1, team.Id ?? -1);
-    }, [setColor, setSelectedTeams, gameIndex, games, setSelectedColors, save, setShowSubmitOverlay]);
+    }, [updateColor, setSelectedTeams, gameIndex, games, setSelectedColors, save, setShowSubmitOverlay]);
 
     const selectedTeamId = useMemo(() => selectedTeams.get(games[gameIndex]?.Id ?? -1) ?? -1, [selectedTeams, games, gameIndex]);
 
     const colorReset = useCallback((i) => {
         const selectedTeam = teams[selectedTeams.get(games[i]?.Id ?? -1) ?? -1];
         if (selectedTeam) {
-            setColor(getTeamColor(selectedTeam));
+            updateColor(getTeamColor(selectedTeam));
         } else {
-            setColor('#ffffff00');
+            updateColor('#ffffff00');
         }
-    }, [setColor, selectedTeams, teams, games]);
+    }, [updateColor, selectedTeams, teams, games]);
 
     const changeGame = useCallback((dir: number) => {
         if (games.length === 0 || (gameIndex === 0 && dir < 0) || (gameIndex === games.length - 1 && dir > 0)) return;

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Collapse, Container, Navbar, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './NavMenu.css';
 import { useAuth } from '../../hooks/useAuth';
 import { useCookies } from 'react-cookie';
@@ -11,6 +11,7 @@ const NavMenu = () => {
     const { isCommish, isInactive, isBowlActive } = useAuth();
 
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
     const toggleNavbar = useCallback(() => {
         setCollapsed(c => !c);
@@ -26,6 +27,11 @@ const NavMenu = () => {
         }
     }, [navigate, removeCookie]);
 
+    let pName = pathname.toLowerCase().substring(1);
+    if (pName === '' || pName === 'index.html') {
+        pName = 'home';
+    }
+
     return (
         <header style={{ position: 'sticky', left: 0, zIndex: 99999, height: '56px' }}>
             <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white mb-3" color="dark" dark>
@@ -34,25 +40,25 @@ const NavMenu = () => {
                     <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
                         <ul className="navbar-nav flex-grow">
                             <NavItem onClick={() => setCollapsed(true) }>
-                                <NavLink tag={Link} className="text-light" to="/">Home</NavLink>
+                                <NavLink tag={Link} className={`text-light ${pName === 'home' ? 'selected-nav' : ''}`} to="/"><span>Home</span></NavLink>
                             </NavItem>
                             {
                                 !isInactive && isBowlActive && 
                                 <NavItem onClick={() => setCollapsed(true)}>
-                                    <NavLink tag={Link} className="text-light" to="/games">Games</NavLink>
+                                    <NavLink tag={Link} className={`text-light ${pName === 'games' ? 'selected-nav' : ''}`} to="/games"><span>Games</span></NavLink>
                                 </NavItem>
                             }
                             {
                                 isCommish &&  
                                 <NavItem onClick={() => setCollapsed(true)}>
-                                    <NavLink tag={Link} className="text-light" to="/commish">Commish</NavLink>
+                                    <NavLink tag={Link} className={`text-light ${pName === 'commish' ? 'selected-nav' : ''}`} to="/commish"><span>Commish</span></NavLink>
                                 </NavItem>
                             }
                             <NavItem onClick={() => setCollapsed(true)}>
-                                <NavLink tag={Link} className="text-light" to="/preferences">Preferences</NavLink>
+                                <NavLink tag={Link} className={`text-light ${pName === 'preferences' ? 'selected-nav' : ''}`} to="/preferences"><span>Preferences</span></NavLink>
                             </NavItem>
                             <NavItem onClick={() => setCollapsed(true)}>
-                                <NavLink tag={Link} className="text-light" to="/history">History</NavLink>
+                                <NavLink tag={Link} className={`text-light ${pName === 'history' ? 'selected-nav' : ''}`} to="/history"><span>History</span></NavLink>
                             </NavItem>
                             <span className="divider">|</span>
                             <hr className="smlDivider" />

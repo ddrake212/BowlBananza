@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BowlBananza.Controllers
 {
@@ -373,6 +374,22 @@ namespace BowlBananza.Controllers
                 db.NotificationTokens.Update(notificationToken);
             }
             db.SaveChanges();
+
+            var identity = (ClaimsIdentity)HttpContext.User.Identity!;
+            var claims = identity.Claims.ToList();
+
+            claims.RemoveAll(c => c.Type == "permissionRequired");
+            claims.Add(new Claim("permissionRequired", "false"));
+
+            var principal = new ClaimsPrincipal(
+                new ClaimsIdentity(claims, "Cookies")
+            );
+
+            await HttpContext.SignInAsync("Cookies", principal);
+
+            // reflect immediately in this request
+            HttpContext.User = principal;
+
             return Ok();
         }
 

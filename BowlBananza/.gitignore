@@ -1,0 +1,51 @@
+# =========================
+# Secrets / credentials
+# =========================
+/BowlBananza/Secrets/*.json
+/BowlBananza/Secrets/**/*.json
+
+# If you ever move it elsewhere:
+firebase-service-account.json
+**/firebase-service-account.json
+
+# Optional: ignore the whole Secrets folder (uncomment if you want everything in it ignored)
+# /BowlBananza/Secrets/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+
+# =========================
+# ASP.NET Core appsettings variants (keep base appsettings.json tracked)
+# =========================
+appsettings.*.json
+!appsettings.json
+
+# =========================
+# .NET / Visual Studio
+# =========================
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log
+
+# =========================
+# Node / React (ClientApp)
+# =========================
+/BowlBananza/ClientApp/node_modules/
+/BowlBananza/ClientApp/build/
+/BowlBananza/ClientApp/dist/
+/BowlBananza/ClientApp/coverage/
+
+# =========================
+# OS / Editor junk
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

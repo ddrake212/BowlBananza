@@ -2,6 +2,7 @@
 using BowlBananza.Data;
 using BowlBananza.Helpers;
 using BowlBananza.Models;
+using BowlBananza.Services.Notifications;
 using CollegeFootballData;
 using CollegeFootballData.Models;
 using Mailjet.Client.Resources;
@@ -41,12 +42,14 @@ namespace BowlBananza.Controllers
         private readonly AppDbContext db;
         private readonly ILogger<EasternDynamicScheduledWorker> _logger;
         private readonly IConfiguration _config;
-        public CommishController(ISyncDataService syncService, AppDbContext dbContext, IConfiguration configuration, ILogger<EasternDynamicScheduledWorker> logger)
+        private readonly PushNotificationService _push;
+        public CommishController(ISyncDataService syncService, AppDbContext dbContext, PushNotificationService push, IConfiguration configuration, ILogger<EasternDynamicScheduledWorker> logger)
         {
             _config = configuration;
             db = dbContext;
             _syncService = syncService;
             _logger = logger;
+            _push = push;
 
             // Create the API client
             cfbClient = new CollegeFootballDataHelper(configuration);
@@ -202,7 +205,7 @@ namespace BowlBananza.Controllers
                 <!-- CTA -->
                 <div style=""margin-top:16px;"">
                   <a
-                    href=""https://www.bowlbananza.com""
+                    href=""https://www.bowlbananza.com?nt=games""
                     style=""display:inline-block;background:rgb(253,99,39);color:#0f1116;text-decoration:none;font-weight:900;font-size:14px;padding:12px 16px;border-radius:14px;border:1px solid rgba(0,0,0,0.12);""
                   >
                     Finish My Picks
@@ -214,7 +217,7 @@ namespace BowlBananza.Controllers
                 <!-- Fallback link -->
                 <div style=""margin-top:14px;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.65);"">
                   If the buttons don’t work, copy and paste this link into your browser:<br />
-                  <span style=""word-break:break-all;color:rgba(255,255,255,0.85);"">https://www.bowlbananza.com</span>
+                  <span style=""word-break:break-all;color:rgba(255,255,255,0.85);"">https://www.bowlbananza.com?nt=games</span>
                 </div>
               </td>
             </tr>
@@ -241,6 +244,12 @@ namespace BowlBananza.Controllers
 </html>
 
 ";
+                await _push.SendToUserAsync(
+                    userIds: new List<int>([user.User.Id]),
+                    title: "Unfinished Picks!",
+                    body: $"You still have {user.MissingGames.Count} game{(user.MissingGames.Count != 1 ? "s" : "")} left to select a winner!",
+                    url: "games"
+                );
                 var success = await EmailHelper.SendEmail(user.User.Email, "ddrake212@gmail.com", "Bowl Bananza", html.Replace("{{firstName}}", user.User.FirstName).Replace("{{missingPickCount}}", user.MissingGames.Count.ToString()).Replace("{{missingPickLabel}}", user.MissingGames.Count == 1 ? "game" : "games"), "Unfinished Picks!");
             }
         }
@@ -251,7 +260,14 @@ namespace BowlBananza.Controllers
             var year = SeasonHelper.GetCurrentSeasonYear();
             var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == leagueId && x.Year == year).Select(x => x.UserId).ToHashSet();
             var users = db.BBUsers.Where(u => u.Inactive != true && LeagueUsers.Contains(u.Id)).ToList();
-            foreach(var user in users) { 
+
+            await _push.SendToUserAsync(
+                userIds: users.Select(x => x.Id).ToList(),
+                title: "Let The Games Begin!",
+                body: $"You’re in. The bowls are coming fast, and the games wait for no one. Jump in, make your picks, and let’s see who really knows ball.",
+                url: "games"
+            );
+            foreach (var user in users) { 
             var html = @"
 <!doctype html>
 <html lang=""en"">
@@ -341,7 +357,7 @@ namespace BowlBananza.Controllers
                 <div style=""margin-top:16px;"">
                   <!-- Replace href with your real link -->
                   <a
-                    href=""https://www.bowlbananza.com""
+                    href=""https://www.bowlbananza.com?nt=games""
                     style=""display:inline-block;background:rgb(253,99,39);color:#0f1116;text-decoration:none;font-weight:900;font-size:14px;padding:12px 16px;border-radius:14px;border:1px solid rgba(0,0,0,0.12);""
                   >
                     Make My Picks
@@ -367,7 +383,7 @@ namespace BowlBananza.Controllers
                 <!-- Fallback link -->
                 <div style=""margin-top:14px;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.65);"">
                   If the buttons don’t work, copy and paste this link into your browser:<br />
-                  <span style=""word-break:break-all;color:rgba(255,255,255,0.85);"">https://www.bowlbananza.com</span>
+                  <span style=""word-break:break-all;color:rgba(255,255,255,0.85);"">https://www.bowlbananza.com?nt=games</span>
                 </div>
               </td>
             </tr>
@@ -393,7 +409,7 @@ namespace BowlBananza.Controllers
   </body>
 </html>
 ";
-            var success = await EmailHelper.SendEmail(user.Email, "ddrake212@gmail.com", "Bowl Bananza", html.Replace("{{firstName}}", user.FirstName), "Let The Games Begin!");
+                var success = await EmailHelper.SendEmail(user.Email, "ddrake212@gmail.com", "Bowl Bananza", html.Replace("{{firstName}}", user.FirstName), "Let The Games Begin!");
             }
         }
 
@@ -681,7 +697,7 @@ namespace BowlBananza.Controllers
             }
             List<int> ids = new List<int>();
             ids.Add(LeagueId());
-            await DataSyncHelper.SyncData(_config, db, _logger, ids);
+            await DataSyncHelper.SyncData(_config, db, _push, _logger, ids);
             return Ok(true);
         }
 
@@ -693,7 +709,7 @@ namespace BowlBananza.Controllers
                 return Unauthorized();
             }
             var Leagues = db.Leagues.ToList();
-            await DataSyncHelper.SyncData(_config, db, _logger, Leagues.Select(l => l.Id).ToList());
+            await DataSyncHelper.SyncData(_config, db, _push, _logger, Leagues.Select(l => l.Id).ToList());
             return Ok(true);
         }
 

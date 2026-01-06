@@ -4,11 +4,11 @@ import { useAuth } from '../hooks/useAuth';
 import styles from "./Shared.module.css";
 import { CookiesProvider } from 'react-cookie';
 import Background from './Background/Background';
-import { ColorContext } from '../contexts/ColorContext';
 import { useLocation } from 'react-router';
 import { useIsApp } from '../hooks/useIsApp';
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
+import { useUpdateColor } from '../hooks/useUpdateColor';
 interface LayoutProps {
     children: React.ReactNode;
 }
@@ -30,7 +30,7 @@ const Layout = ({ children }: LayoutProps) => {
 
     const app = useMemo(() => initializeApp(firebaseConfig), [firebaseConfig]);
 
-    const { setColor } = React.useContext(ColorContext) ?? { setColor: () => { } };
+    const updateColor = useUpdateColor();
 
     const { pathname } = useLocation();
 
@@ -81,8 +81,8 @@ const Layout = ({ children }: LayoutProps) => {
     }, [isApp, loggedIn, permissionRequired, app]);
 
     useEffect(() => {
-        setColor('#00000000');
-    }, [setColor, pathname]);
+        updateColor('#00000000');
+    }, [updateColor, pathname]);
 
     let pName = pathname;
     if (pName === '/' || pName === '/index.html') {

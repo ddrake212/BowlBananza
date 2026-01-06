@@ -1,4 +1,5 @@
 ﻿using BowlBananza.Data;
+using BowlBananza.Services.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,18 +18,21 @@ namespace BowlBananza.Helpers
         private readonly TimeZoneInfo _eastern;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _config;
+        private readonly PushNotificationService _push;
 
         public EasternDynamicScheduledWorker(
             ILogger<EasternDynamicScheduledWorker> logger,
             TimeProvider timeProvider,
             IConfiguration config,
-            IServiceScopeFactory scopeFactory)
+            IServiceScopeFactory scopeFactory,
+            PushNotificationService push)
         {
             _logger = logger;
             _time = timeProvider;
             _scopeFactory = scopeFactory;
             _eastern = TimeZones.Eastern;
             _config = config;
+            _push = push;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -79,11 +83,8 @@ namespace BowlBananza.Helpers
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                         var leagues = db.Leagues.ToList();
-                        foreach (var league in leagues)
-                        {
-                            // If you still need this helper, pass the scoped db
-                            await DataSyncHelper.SyncData(_config, db, _logger, league.Id);
-                        }
+                        // If you still need this helper, pass the scoped db
+                        await DataSyncHelper.SyncData(_config, db, _push, _logger, leagues.Select(x => x.Id).ToList());
 
                         var sync = scope.ServiceProvider.GetRequiredService<ISyncDataService>();
                         await sync.SyncDataAsync(stoppingToken);

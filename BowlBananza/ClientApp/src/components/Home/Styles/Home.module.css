@@ -96,9 +96,9 @@
     border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
-.leaderAvatarFallback:empty {
-    display: none;
-}
+    .leaderAvatarFallback:empty {
+        display: none;
+    }
 
 .leaderNames {
     display: flex;
@@ -248,7 +248,6 @@
     margin-bottom: -.5rem;
 }
 
-
 /* --- Table --- */
 
 .tableScroller {
@@ -326,6 +325,11 @@
     align-items: center;
     min-height: 100%;
     font-weight: 800;
+}
+
+/* ✅ NEW: replaces inline style={ filter: 'blur(4px)' } */
+.userCellBlurred {
+    filter: blur(4px);
 }
 
 .userCellCorrect {
@@ -446,4 +450,39 @@
     border-radius: 14px;
     border: 1px solid var(--borderMed);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(0, 255, 255, 0.06);
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .leaderCard {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+    }
+
+    .th {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    .tbody {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    .userCellBlurred {
+        filter: none !important;
+    }
+
+    .leaderRow {
+        box-shadow: none !important;
+    }
+
+    .userHeaderTh {
+        box-shadow: none !important;
+    }
+
+    .emptyState {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
 }

@@ -11,7 +11,7 @@ import {
 import styles from "./Styles/History.module.css";
 import { shouldUseDarkText } from "../../utils/colorUtils";
 import { useNavigate } from "react-router";
-import { ColorContext } from "../../contexts/ColorContext";
+import { useUpdateColor } from "../../hooks/useUpdateColor";
 
 export type History = {
     Id: number;
@@ -217,10 +217,10 @@ export default function History() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    const { setColor } = React.useContext(ColorContext) ?? { setColor: () => { } };
+    const updateColor = useUpdateColor();
 
     useEffect(() => {
-        setColor('#ffffff00');
+        updateColor('#ffffff00');
         const glowColors = [
             "#00FFFF", // Cyan
             "#008CFF", // Electric Blue
@@ -237,10 +237,10 @@ export default function History() {
         const timeout = setInterval(() => {
             const c = glowColors.shift();
             glowColors.push(c ?? '');
-            setColor(c ?? '');
+            updateColor(c ?? '');
         }, 5000);
         return () => clearInterval(timeout);
-    }, [setColor]);
+    }, [updateColor]);
 
     useEffect(() => {
         const fetchHistory = async () => {

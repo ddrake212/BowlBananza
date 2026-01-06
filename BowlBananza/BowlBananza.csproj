@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="CFBSharp" Version="4.6.0" />
     <PackageReference Include="CollegeFootballData" Version="5.13.2" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
     <PackageReference Include="Mailjet.Api" Version="3.0.0" />
     <PackageReference Include="MailKit" Version="4.14.1" />
 	<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.19" />

@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router';
-import { ColorContext } from '../../contexts/ColorContext';
 import { CommishData } from '../../types/commishTypes';
 import MainLoading from '../MainLoading';
 import styles from './Styles/Commish.module.css';
+import { useUpdateColor } from '../../hooks/useUpdateColor';
 
 const Commish = () => {
     const { isCommish, checked } = useAuth();
@@ -20,10 +20,10 @@ const Commish = () => {
         }
     }, [isCommish, checked, navigate]);
 
-    const { setColor } = React.useContext(ColorContext) ?? { setColor: () => { } };
+    const updateColor = useUpdateColor();
 
     useEffect(() => {
-        setColor('#ffffff00');
+        updateColor('#ffffff00');
         const glowColors = [
             "#00FFFF", // Cyan
             "#008CFF", // Electric Blue
@@ -40,10 +40,10 @@ const Commish = () => {
         const timeout = setInterval(() => {
             const c = glowColors.shift();
             glowColors.push(c ?? '');
-            setColor(c ?? '');
+            updateColor(c ?? '');
         }, 5000);
         return () => clearInterval(timeout);
-    }, [setColor]);
+    }, [updateColor]);
 
     useEffect(() => {
         setLoading(true);

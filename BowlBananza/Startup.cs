@@ -1,6 +1,7 @@
 ﻿using BowlBananza.Data;
 using BowlBananza.Helpers;
 using BowlBananza.Services;
+using BowlBananza.Services.Notifications; // ✅ ADD
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -67,6 +68,8 @@ namespace BowlBananza
 
             services.AddScoped<AuthService>();
 
+            services.AddScoped<PushNotificationService>();
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
@@ -80,6 +83,10 @@ namespace BowlBananza
                 options.ExpireTimeSpan = TimeSpan.FromDays(14000);
                 options.SlidingExpiration = true;
             });
+
+            // ✅ PUSH NOTIFICATIONS (FCM HTTP v1) - ADD
+            services.Configure<FirebaseOptions>(Configuration.GetSection("Firebase"));
+            services.AddHttpClient<FcmSender>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -109,12 +116,10 @@ namespace BowlBananza
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // ✅ FIX: only one UseEndpoints block
             app.UseEndpoints(endpoints =>
             {
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
+                endpoints.MapControllers();
             });
 
             app.UseSpa(spa =>

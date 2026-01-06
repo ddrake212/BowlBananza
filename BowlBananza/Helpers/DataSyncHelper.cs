@@ -1,5 +1,6 @@
 ﻿using BowlBananza.Data;
 using BowlBananza.Models;
+using BowlBananza.Services.Notifications;
 using BowlBananza.TestData;
 using CollegeFootballData.Models;
 using Mailjet.Client.Resources;
@@ -24,9 +25,16 @@ namespace BowlBananza.Helpers
             return (team, stats);
         }
 
-        private static async Task SendTieBreakerEmail(List<Models.User> users)
+        private static async Task SendTieBreakerEmail(List<Models.User> users, PushNotificationService push)
         {
             var sender = new MailKitEmailSender();
+
+            await push.SendToUserAsync(
+                userIds: users.Select(x => x.Id).ToList(),
+                title: "Tie Breaker!",
+                body: $"We’ve got a tie at the top. To break it, you need to pick the winner of the National Championship!",
+                url: "games"
+            );
             foreach (var user in users)
             {
                 var html = @"
@@ -115,7 +123,7 @@ namespace BowlBananza.Helpers
                 <div style=""margin-top:16px;"">
                   <!-- Replace href with your real link -->
                   <a
-                    href=""https://www.bowlbananza.com""
+                    href=""https://www.bowlbananza.com?nt=games""
                     style=""display:inline-block;background:rgb(253,99,39);color:#0f1116;text-decoration:none;font-weight:900;font-size:14px;padding:12px 16px;border-radius:14px;border:1px solid rgba(0,0,0,0.12);""
                   >
                     Pick the National Champion
@@ -140,7 +148,7 @@ namespace BowlBananza.Helpers
                 <div style=""margin-top:14px;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.65);"">
                   If the button doesn’t work, copy and paste this link into your browser:<br />
                   <span style=""word-break:break-all;color:rgba(255,255,255,0.85);"">
-                    https://www.bowlbananza.com
+                    https://www.bowlbananza.com?nt=games
                   </span>
                 </div>
               </td>
@@ -166,16 +174,24 @@ namespace BowlBananza.Helpers
 </html>
 
 ";
-
+                
                 var success = await EmailHelper.SendEmail(user.Email, "ddrake212@gmail.com", "Bowl Bananza", html.Replace("{{firstName}}", user.FirstName), "Tie Breaker!");
             }
         }
 
-        public static async Task SendNewGamesEmail(AppDbContext db, int gameCount, int LeagueId)
+        public static async Task SendNewGamesEmail(AppDbContext db, PushNotificationService push, int gameCount, int LeagueId)
         {
             var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == LeagueId).Select(x => x.UserId).ToHashSet();
             var users = db.BBUsers.Where(u => LeagueUsers.Contains(u.Id) && u.Inactive != true).ToList();
-            foreach(var user in users)
+
+            await push.SendToUserAsync(
+                userIds: users.Select(x => x.Id).ToList(),
+                title: "Games Added!",
+                body: $"We added more {gameCount} game{(gameCount != 1 ? "s" : "")} to this season’s pool. Make your selections so you don’t miss any points.",
+                url: "games"
+            );
+
+            foreach (var user in users)
             {
                 var html = @"
 <!doctype html>
@@ -278,7 +294,7 @@ namespace BowlBananza.Helpers
                 <!-- CTA -->
                 <div style=""margin-top:16px;"">
                   <a
-                    href=""https://www.bowlbananza.com""
+                    href=""https://www.bowlbananza.com?nt=games""
                     style=""display:inline-block;background:rgb(253,99,39);color:#0f1116;text-decoration:none;font-weight:900;font-size:14px;padding:12px 16px;border-radius:14px;border:1px solid rgba(0,0,0,0.12);""
                   >
                     Make My Picks
@@ -303,7 +319,7 @@ namespace BowlBananza.Helpers
                 <div style=""margin-top:14px;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.65);"">
                   If the button doesn’t work, copy and paste this link into your browser:<br />
                   <span style=""word-break:break-all;color:rgba(255,255,255,0.85);"">
-                    https://www.bowlbananza.com
+                    https://www.bowlbananza.com?nt=games
                   </span>
                 </div>
               </td>
@@ -329,7 +345,7 @@ namespace BowlBananza.Helpers
 </html>
 
 ";
-
+                
                 var success = await EmailHelper.SendEmail(user.Email, "ddrake212@gmail.com", "Bowl Bananza", html.Replace("{{firstName}}", user.FirstName).Replace("{{newGamesCount}}", gameCount.ToString()), "Games Added!");
             }
         }
@@ -437,7 +453,7 @@ namespace BowlBananza.Helpers
             return pointsByUserId;
         }
 
-        public static async Task CalculateTieBreaker(List<Game> games, int year, AppDbContext db, int LeagueId)
+        public static async Task CalculateTieBreaker(List<Game> games, int year, AppDbContext db, PushNotificationService push, int LeagueId)
         {
             var pointsByUserId = await CalculateScores(games, year, db, LeagueId);
 
@@ -470,12 +486,12 @@ namespace BowlBananza.Helpers
                 var idHash = tiedLeaderUserIds.ToHashSet();
                 var LeagueUsers = db.LeagueUsers.Where(x => x.LeagueId == LeagueId && x.Year == year).Select(x => x.UserId).ToHashSet();
                 var userToSendTo = await db.BBUsers.Where(u => LeagueUsers.Contains(u.Id) && idHash.Contains(u.Id) && u.Inactive != true).ToListAsync();
-                SendTieBreakerEmail(userToSendTo);
+                SendTieBreakerEmail(userToSendTo, push);
             }
         }
 
 
-        public static async Task<bool> SyncData(IConfiguration config, AppDbContext db, ILogger<EasternDynamicScheduledWorker> _logger, List<int> LeagueIds)
+        public static async Task<bool> SyncData(IConfiguration config, AppDbContext db, PushNotificationService push, ILogger<EasternDynamicScheduledWorker> _logger, List<int> LeagueIds)
         {
             _logger.LogInformation(
                         "Data synced at {currentTime} (UTC).",
@@ -503,7 +519,7 @@ namespace BowlBananza.Helpers
                 if (gamesRemaining.Count == 1 && gamesRemaining.Any(g => g.Notes.IndexOf("National Championship") > -1))
                 {
                     _logger.LogInformation("Calculating Tie Breaker");
-                    await CalculateTieBreaker(games, year, db, LeagueId);
+                    await CalculateTieBreaker(games, year, db, push, LeagueId);
                 }
                 else if (gamesRemaining.Count == 0 && games.Any(g => g.Notes.IndexOf("National Championship") > -1))
                 {
@@ -513,7 +529,7 @@ namespace BowlBananza.Helpers
                 else if (bowlData != null && games.Count > currentGames.Count)
                 {
                     _logger.LogInformation("Send new games email");
-                    await SendNewGamesEmail(db, games.Count - currentGames.Count, LeagueId);
+                    await SendNewGamesEmail(db, push, games.Count - currentGames.Count, LeagueId);
                 }
             }
 

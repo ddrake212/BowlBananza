@@ -7,10 +7,22 @@ import LoginWrapper from "./LoginWrapper";
 import { useCookies } from 'react-cookie';
 import { useIsApp } from "../../hooks/useIsApp";
 
+function getSearchParamsAsObject(queryString: string): { [key: string]: string } {
+    // Create a URLSearchParams object from the query string
+    const searchParams = new URLSearchParams(queryString);
+
+    // Convert the URLSearchParams iterator to a plain object
+    const paramsObject: { [key: string]: string } = Object.fromEntries(searchParams.entries());
+
+    return paramsObject;
+}
+
 export default function LoginForm() {
     const [cookies, setCookie, removeCookie] = useCookies(['rememberMe', 'appUser']);
     const location = useLocation();
     const { email, rtnPage } = location.state || {};
+
+    const navigateTo = getSearchParamsAsObject(location.search).nt ?? rtnPage;
 
     const [username, setUsername] = useState(email ?? (cookies.rememberMe ?? ""));
     const [password, setPassword] = useState("");
@@ -29,8 +41,8 @@ export default function LoginForm() {
         if (!submitting && isApp && cookies.appUser) {
             setSubmitting(true);
             fetch(`/api/auth/applogin?userName=${cookies.appUser}`).then((resp) => {
-                if (rtnPage) {
-                    navigate(rtnPage);
+                if (navigateTo) {
+                    navigate(navigateTo);
                 } else {
                     navigate("/home");
                 }
@@ -38,7 +50,7 @@ export default function LoginForm() {
                 setSubmitting(false);
             });
         }
-    }, [submitting, isApp, cookies.appUser, navigate, rtnPage]);
+    }, [submitting, isApp, cookies.appUser, navigate, navigateTo]);
 
     const validateForm = useCallback(() => {
         let valid = username && password;
@@ -77,8 +89,8 @@ export default function LoginForm() {
                 if (isApp) {
                     setCookie('appUser', username);
                 }
-                if (rtnPage) {
-                    navigate(rtnPage);
+                if (navigateTo) {
+                    navigate(navigateTo);
                 } else {
                     navigate("/home");
                 }
@@ -87,7 +99,7 @@ export default function LoginForm() {
                 setSubmitting(false);
             }
         }
-    }, [navigate, isApp, rtnPage, password, username, validateForm, setLoginError, submitting, setSubmitting, rememberMe, setCookie, removeCookie]);
+    }, [navigate, isApp, navigateTo, password, username, validateForm, setLoginError, submitting, setSubmitting, rememberMe, setCookie, removeCookie]);
 
     const onGoogleSubmit = useCallback((success: boolean, email?: string) => {
         if (success) {
@@ -143,7 +155,7 @@ export default function LoginForm() {
                     <button type="submit" disabled={submitting}><span>Login</span></button>
                 </form>
                 <div className={styles.buttonGrp}>
-                    <GoogleLoginButton onSubmit={onGoogleSubmit} rtnPage={rtnPage} startSubmit={() => setSubmitting(true)} />
+                    <GoogleLoginButton onSubmit={onGoogleSubmit} rtnPage={navigateTo} startSubmit={() => setSubmitting(true)} />
                     <button onClick={register} className={styles.btnLink}><span>Register</span></button>
                 </div>
             </div>

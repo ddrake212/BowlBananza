@@ -1,4 +1,5 @@
 ﻿using BowlBananza.Models;
+using BowlBananza.Services.Notifications;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Newtonsoft.Json.Linq;
