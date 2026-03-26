@@ -18,8 +18,8 @@ namespace BowlBananza.Helpers
                 Host = "smtp.gmail.com",
                 Port = 587,
                 UseSsl = false,
-                Username = "ddrake212@gmail.com",
-                Password = "rvco eblz lrjy lcmi"
+                Username = "[EMAIL]",
+                Password = "[PASSWORD]"
             };
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
